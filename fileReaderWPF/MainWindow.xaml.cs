@@ -1,25 +1,16 @@
-﻿using System;
+﻿using fileReaderWPF.Base;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-using System.Diagnostics;
-using System.IO;
-
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Threading;
-
+using System.Windows.Input;
 
 namespace fileReaderWPF
 {
@@ -29,72 +20,68 @@ namespace fileReaderWPF
     public partial class MainWindow : Window
     {
         private string folderPath;
+
+        private static object _syncLock = new object();
+
         private List<string> vilableFilesToRead = new List<string>();
-        List<PhraseLocation> location = new List<PhraseLocation>();
+        private ObservableCollection<PhraseLocation> location = new ObservableCollection<PhraseLocation>();
+
         public MainWindow()
         {
-
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-us");
             InitializeComponent();
-            
+
+            BindingOperations.EnableCollectionSynchronization(location, _syncLock);
+            dataGridViev.ItemsSource = location;
         }
 
-        private List<PhraseLocation> phraseLocation()
+        private void phraseLocation()
         {
-             
-           
             this.Dispatcher.Invoke(() =>
             {
-
                 List<string> lines = new List<string>();
-               
+                location.Clear();
+
                 string line;
                 bool contains;
                 string regexText = phraseTxt.Text;
 
                 int lineCount = 0;
-                
-             
+
                 foreach (var item in vilableFilesToRead)
                 {
-                    StreamReader sr = new StreamReader(item);
-                    while ((line = sr.ReadLine()) != null)
+                    lock (_syncLock)
                     {
-                       
-                        
-                        lineCount++;
-
-                        contains = Regex.IsMatch(line, @"\b" + regexText + @"\b");
-                        if (contains)
+                        StreamReader sr = new StreamReader(item);
+                        while ((line = sr.ReadLine()) != null)
                         {
-                            location.Add(new PhraseLocation { Line = lineCount, Path = item, Sentence = line });
-                            
+                            lineCount++;
+
+                            contains = Regex.IsMatch(line, @"\b" + regexText + @"\b");
+                            if (contains)
+                            {
+                                location.Add(new PhraseLocation { Line = lineCount, Path = item, Sentence = line });
+                            }
                         }
+                        sr.Close();
+                        lineCount = 0;
                     }
-                    sr.Close();
-                    lineCount = 0;
-
                 }
-              
             });
-            return location;
-
-         
-            
-   
         }
-        private Task<List<PhraseLocation>> phraseLocationAsync()
+
+        private Task phraseLocationAsync()
         {
             return Task.Run(() => phraseLocation());
         }
 
         private void updateGrid(List<PhraseLocation> list)
         {
-            
-                this.dataGridViev.ItemsSource = list;
-          
-
-
+            dataGridViev.ItemsSource = null;
+            dataGridViev.ItemsSource = list;
+            dataGridViev.Items.Refresh();
         }
+
         private void folderSelectBtn_Click(object sender, RoutedEventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
@@ -118,17 +105,15 @@ namespace fileReaderWPF
 
         private async void runSeatchBtn_Click(object sender, RoutedEventArgs e)
         {
-            List<PhraseLocation> wordsLocation2 = await phraseLocationAsync();
-            updateGrid(wordsLocation2);
-           // this.dataGridViev.ItemsSource = wordsLocation2;
+            await phraseLocationAsync();
+
+            //updateGrid(wordsLocation2);
+            // this.dataGridViev.ItemsSource = wordsLocation2;
             //foreach (var word in wordsLocation2)
             //{
             //    System.Windows.MessageBox.Show($"Path: {word.Path}\nLine: {word.Line}");
             //}
         }
-     
-
-    
 
         private void dataGridViev_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -156,8 +141,8 @@ namespace fileReaderWPF
             //        i = 0;
             //    }
             //}
-
         }
+
         //public static IEnumerable<TextRange> GetAllWordRanges(FlowDocument document)
         //{
         //    string pattern = @"[^\W\d](\w|[-']{1,2}(?=\w))*";

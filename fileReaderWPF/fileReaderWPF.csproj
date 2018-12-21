@@ -71,7 +71,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PhraseLocation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -99,6 +98,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Large file.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\fileReaderWPF.Base\fileReaderWPF.Base.csproj">
+      <Project>{808200e3-462d-4579-b14b-517c30790ee3}</Project>
+      <Name>fileReaderWPF.Base</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
