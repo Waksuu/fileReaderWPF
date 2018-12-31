@@ -1,4 +1,7 @@
-﻿using fileReaderWPF.Base;
+﻿using fileReaderWPF.Base.Model;
+using fileReaderWPF.Base.Patterns.Specification;
+using fileReaderWPF.Base.Repository;
+using fileReaderWPF.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,6 +14,8 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Unity;
+using Unity.Attributes;
 
 namespace fileReaderWPF
 {
@@ -19,23 +24,37 @@ namespace fileReaderWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string folderPath;
+        #region Dependencies
 
+        [Dependency]
+        public Lazy<IFolderRepository> FolderRepository { get; set; }
+
+        #endregion Dependencies
+
+        private IEnumerable<string> filePaths;
         private static object _syncLock = new object();
 
-        private List<string> vilableFilesToRead = new List<string>();
         private ObservableCollection<PhraseLocation> location = new ObservableCollection<PhraseLocation>();
 
         public MainWindow()
         {
+            var container = ServiceLocator.WpfContainer;
+            ResolveDependencies(container);
+
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-us");
+
             InitializeComponent();
 
             BindingOperations.EnableCollectionSynchronization(location, _syncLock);
             dataGridViev.ItemsSource = location;
         }
 
-        private void phraseLocation()
+        private void ResolveDependencies(IUnityContainer container)
+        {
+            FolderRepository = container.Resolve<Lazy<IFolderRepository>>();
+        }
+
+        private void PhraseLocation(IEnumerable<string> filePaths)
         {
             this.Dispatcher.Invoke(() =>
             {
@@ -48,10 +67,12 @@ namespace fileReaderWPF
 
                 int lineCount = 0;
 
-                foreach (var item in vilableFilesToRead)
+                foreach (var item in filePaths)
                 {
                     lock (_syncLock)
                     {
+                        var liness = File.ReadLines(item);
+
                         StreamReader sr = new StreamReader(item);
                         while ((line = sr.ReadLine()) != null)
                         {
@@ -70,42 +91,38 @@ namespace fileReaderWPF
             });
         }
 
-        private Task phraseLocationAsync()
+        private Task PhraseLocationAsync(IEnumerable<string> filePaths)
         {
-            return Task.Run(() => phraseLocation());
+            return Task.Run(() => PhraseLocation(filePaths));
         }
 
-        private void updateGrid(List<PhraseLocation> list)
+        private void UpdateGrid(List<PhraseLocation> list)
         {
             dataGridViev.ItemsSource = null;
             dataGridViev.ItemsSource = list;
             dataGridViev.Items.Refresh();
         }
 
-        private void folderSelectBtn_Click(object sender, RoutedEventArgs e)
+        private void FolderSelectBtn_Click(object sender, RoutedEventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.RootFolder = Environment.SpecialFolder.MyComputer;
             fbd.Description = "Select folder with files to search";
+
             if (fbd.ShowDialog().ToString().Equals("OK"))
             {
-                runSeatchBtn.IsEnabled = true;
-                vilableFilesToRead.Clear();
-                folderPath = fbd.SelectedPath;
-                System.Windows.MessageBox.Show(folderPath);
-                foreach (string file in Directory.GetFiles(@folderPath))
-                {
-                    if (System.IO.Path.GetExtension(file) == ".txt")
-                    {
-                        vilableFilesToRead.Add(file);
-                    }
-                }
+                string folderPath = fbd.SelectedPath;
+
+                ISpecification<string> specification = new ExpressionSpecification<string>(o => Path.GetExtension(o).Equals(".txt"));
+                filePaths = FolderRepository.Value.GetFilePaths(folderPath, specification);
+
+                runSearchBtn.IsEnabled = true;
             }
         }
 
-        private async void runSeatchBtn_Click(object sender, RoutedEventArgs e)
+        private async void RunSeatchBtn_Click(object sender, RoutedEventArgs e)
         {
-            await phraseLocationAsync();
+            await PhraseLocationAsync(filePaths);
 
             //updateGrid(wordsLocation2);
             // this.dataGridViev.ItemsSource = wordsLocation2;
@@ -115,12 +132,12 @@ namespace fileReaderWPF
             //}
         }
 
-        private void dataGridViev_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void DataGridViev_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            int i = 0;
+            //int i = 0;
             List<string> phraseIntoList = new List<string>();
-            richTextBoxRun.Text = "";
-            String line = "";
+            richTextBoxRun.Text = string.Empty;
+            string line = string.Empty;
             line = location[dataGridViev.SelectedIndex].Sentence;
             richTextBoxRun.Text = line;
             //phraseIntoList = phraseTxt.Text.Split(' ').ToList();

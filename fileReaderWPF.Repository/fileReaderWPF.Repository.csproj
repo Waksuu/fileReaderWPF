@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{808200E3-462D-4579-B14B-517C30790EE3}</ProjectGuid>
+    <ProjectGuid>{5785C632-E3A2-4FA5-B0F1-AED9AA2D9CA3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>fileReaderWPF.Base</RootNamespace>
-    <AssemblyName>fileReaderWPF.Base</AssemblyName>
+    <RootNamespace>fileReaderWPF.Repository</RootNamespace>
+    <AssemblyName>fileReaderWPF.Repository</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,18 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\PhraseLocation.cs" />
-    <Compile Include="Patterns\Specification\ExpressionSpecification.cs" />
-    <Compile Include="Patterns\Specification\NotSpecification.cs" />
-    <Compile Include="Patterns\Specification\OrSpecification.cs" />
-    <Compile Include="Patterns\Specification\AndSpecification.cs" />
-    <Compile Include="Patterns\Specification\CompositeSpecification.cs" />
-    <Compile Include="Patterns\Specification\ISpecification.cs" />
+    <Compile Include="FolderRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository\IFolderRepository.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Logic\" />
+    <ProjectReference Include="..\fileReaderWPF.Base\fileReaderWPF.Base.csproj">
+      <Project>{808200E3-462D-4579-B14B-517C30790EE3}</Project>
+      <Name>fileReaderWPF.Base</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
