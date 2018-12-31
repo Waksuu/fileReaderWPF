@@ -80,6 +80,10 @@
       <Project>{808200E3-462D-4579-B14B-517C30790EE3}</Project>
       <Name>fileReaderWPF.Base</Name>
     </ProjectReference>
+    <ProjectReference Include="..\fileReaderWPF.Logic\fileReaderWPF.Logic.csproj">
+      <Project>{e7c39489-e5a3-4868-b074-7f0820f94858}</Project>
+      <Name>fileReaderWPF.Logic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\fileReaderWPF.Repository\fileReaderWPF.Repository.csproj">
       <Project>{5785C632-E3A2-4FA5-B0F1-AED9AA2D9CA3}</Project>
       <Name>fileReaderWPF.Repository</Name>

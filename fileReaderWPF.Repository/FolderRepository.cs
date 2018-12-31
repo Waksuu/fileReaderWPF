@@ -13,10 +13,7 @@ namespace fileReaderWPF.Repository
     {
         public IEnumerable<string> GetFilePaths(string folderPath, ISpecification<string> specification)
         {
-            var a = Directory.GetFiles(@folderPath).ToList();
-            var b = a.FindAll(o => specification.IsSatisfiedBy(o));
-
-            return b;
+            return Directory.GetFiles(@folderPath).ToList().FindAll(o => specification.IsSatisfiedBy(o));
         }
     }
 }

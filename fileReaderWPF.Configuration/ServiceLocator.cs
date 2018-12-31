@@ -1,4 +1,5 @@
-﻿using fileReaderWPF.Base.Repository;
+﻿using fileReaderWPF.Base.Logic;
+using fileReaderWPF.Base.Repository;
 using fileReaderWPF.Repository;
 using System;
 using Unity;
@@ -38,7 +39,7 @@ namespace fileReaderWPF.Configuration
 
         private static void RegisterLogic(IUnityContainer container)
         {
-            //container.RegisterType<Base.ISodaDispenserLogic, Logic.SodaDispenserLogic>();
+            container.RegisterType<ISearchLogic, SearchLogic>();
         }
 
         private static void RegisterRepository(IUnityContainer container)

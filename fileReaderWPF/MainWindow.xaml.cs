@@ -1,4 +1,5 @@
-﻿using fileReaderWPF.Base.Model;
+﻿using fileReaderWPF.Base.Logic;
+using fileReaderWPF.Base.Model;
 using fileReaderWPF.Base.Patterns.Specification;
 using fileReaderWPF.Base.Repository;
 using fileReaderWPF.Configuration;
@@ -16,6 +17,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using Unity;
 using Unity.Attributes;
+using Unity.Interception.Utilities;
 
 namespace fileReaderWPF
 {
@@ -29,6 +31,8 @@ namespace fileReaderWPF
         [Dependency]
         public Lazy<IFolderRepository> FolderRepository { get; set; }
 
+        [Dependency]
+        public Lazy<ISearchLogic> SearchLogic { get; set; }
         #endregion Dependencies
 
         private IEnumerable<string> filePaths;
@@ -52,55 +56,7 @@ namespace fileReaderWPF
         private void ResolveDependencies(IUnityContainer container)
         {
             FolderRepository = container.Resolve<Lazy<IFolderRepository>>();
-        }
-
-        private void PhraseLocation(IEnumerable<string> filePaths)
-        {
-            this.Dispatcher.Invoke(() =>
-            {
-                List<string> lines = new List<string>();
-                location.Clear();
-
-                string line;
-                bool contains;
-                string regexText = phraseTxt.Text;
-
-                int lineCount = 0;
-
-                foreach (var item in filePaths)
-                {
-                    lock (_syncLock)
-                    {
-                        var liness = File.ReadLines(item);
-
-                        StreamReader sr = new StreamReader(item);
-                        while ((line = sr.ReadLine()) != null)
-                        {
-                            lineCount++;
-
-                            contains = Regex.IsMatch(line, @"\b" + regexText + @"\b");
-                            if (contains)
-                            {
-                                location.Add(new PhraseLocation { Line = lineCount, Path = item, Sentence = line });
-                            }
-                        }
-                        sr.Close();
-                        lineCount = 0;
-                    }
-                }
-            });
-        }
-
-        private Task PhraseLocationAsync(IEnumerable<string> filePaths)
-        {
-            return Task.Run(() => PhraseLocation(filePaths));
-        }
-
-        private void UpdateGrid(List<PhraseLocation> list)
-        {
-            dataGridViev.ItemsSource = null;
-            dataGridViev.ItemsSource = list;
-            dataGridViev.Items.Refresh();
+            SearchLogic = container.Resolve<Lazy<ISearchLogic>>();
         }
 
         private void FolderSelectBtn_Click(object sender, RoutedEventArgs e)
@@ -113,7 +69,7 @@ namespace fileReaderWPF
             {
                 string folderPath = fbd.SelectedPath;
 
-                ISpecification<string> specification = new ExpressionSpecification<string>(o => Path.GetExtension(o).Equals(".txt"));
+                ISpecification<string> specification = new ExpressionSpecification<string>(o => Path.GetExtension(o).Equals(".txt")); // TODO Nie hard code txt
                 filePaths = FolderRepository.Value.GetFilePaths(folderPath, specification);
 
                 runSearchBtn.IsEnabled = true;
@@ -122,14 +78,10 @@ namespace fileReaderWPF
 
         private async void RunSeatchBtn_Click(object sender, RoutedEventArgs e)
         {
-            await PhraseLocationAsync(filePaths);
-
-            //updateGrid(wordsLocation2);
-            // this.dataGridViev.ItemsSource = wordsLocation2;
-            //foreach (var word in wordsLocation2)
-            //{
-            //    System.Windows.MessageBox.Show($"Path: {word.Path}\nLine: {word.Line}");
-            //}
+            string regexText = phraseTxt.Text;
+            var sentences = await SearchLogic.Value.SearchWords(filePaths, regexText,_syncLock);
+            location.Clear();
+            sentences.ForEach(x => location.Add(x));
         }
 
         private void DataGridViev_MouseDoubleClick(object sender, MouseButtonEventArgs e)
