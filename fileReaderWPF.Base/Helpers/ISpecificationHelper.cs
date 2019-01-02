@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace fileReaderWPF.Base.Repository
+namespace fileReaderWPF.Base.Helpers
 {
-    public interface IFolderRepository
+    public interface ISpecificationHelper
     {
-        IEnumerable<string> GetFilesForPath(string folderPath, ISpecification<string> specification);
+        ISpecification<string> SpecifyExtensions(IEnumerable<string> extensions);
     }
 }

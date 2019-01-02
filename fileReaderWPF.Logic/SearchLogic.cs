@@ -1,49 +1,32 @@
-﻿using System;
+﻿using fileReaderWPF.Base.Helpers;
+using fileReaderWPF.Base.Model;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using fileReaderWPF.Base.Logic;
-using fileReaderWPF.Base.Model;
+using Unity;
 
 namespace fileReaderWPF.Base.Logic
 {
     public class SearchLogic : ISearchLogic
     {
-        public Task<IEnumerable<PhraseLocation>> SearchWords(IEnumerable<string> filePaths, string phrase, object _syncLock)
+        public Task<IEnumerable<PhraseLocation>> SearchWordsAsync(IEnumerable<string> filePaths, string phrase, IUnityContainer container)
         {
-            return Task.Run(() => {
+            return Task.Run(() =>
+            {
                 List<PhraseLocation> results = new List<PhraseLocation>();
-                List<string> lines = new List<string>();
 
-                string line;
-                bool contains;
-
-                int lineCount = 0;
-
-                foreach (var item in filePaths)
+                Parallel.ForEach(filePaths, (path) =>
                 {
-                    lock (_syncLock)
+                    IFileReaderHelper FileReaderHelper = container.Resolve<IFileReaderHelper>(Path.GetExtension(path));
+
+                    var phraseLocations = FileReaderHelper.GetPhraseLocationsFromFile(path, @"\b" + phrase + @"\b").ToList();
+                    lock (results)
                     {
-                        var liness = File.ReadLines(item);
-
-                        StreamReader sr = new StreamReader(item);
-                        while ((line = sr.ReadLine()) != null)
-                        {
-                            lineCount++;
-
-                            contains = Regex.IsMatch(line, @"\b" + phrase + @"\b");
-                            if (contains)
-                            {
-                                results.Add(new PhraseLocation { Line = lineCount, Path = item, Sentence = line });
-                            }
-                        }
-                        sr.Close();
-                        lineCount = 0;
+                        results.AddRange(phraseLocations);
                     }
-                }
+                });
+
                 return results.AsEnumerable();
             });
         }

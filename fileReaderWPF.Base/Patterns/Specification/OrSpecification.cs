@@ -2,8 +2,8 @@
 {
     public class OrSpecification<T> : CompositeSpecification<T>
     {
-        private ISpecification<T> leftSpecification;
-        private ISpecification<T> rightSpecification;
+        ISpecification<T> leftSpecification;
+        ISpecification<T> rightSpecification;
 
         public OrSpecification(ISpecification<T> left, ISpecification<T> right)
         {

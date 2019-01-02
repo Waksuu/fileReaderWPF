@@ -1,5 +1,7 @@
-﻿using fileReaderWPF.Base.Logic;
+﻿using fileReaderWPF.Base.Helpers;
+using fileReaderWPF.Base.Logic;
 using fileReaderWPF.Base.Repository;
+using fileReaderWPF.Logic.Helpers;
 using fileReaderWPF.Repository;
 using System;
 using Unity;
@@ -40,6 +42,11 @@ namespace fileReaderWPF.Configuration
         private static void RegisterLogic(IUnityContainer container)
         {
             container.RegisterType<ISearchLogic, SearchLogic>();
+
+            container.RegisterType<ISpecificationHelper, SpecificationHelper>();
+            container.RegisterType<IFileReaderHelper, FileReaderTxtHelper>(".txt");
+            container.RegisterType<IFileReaderHelper, FileReaderPdfHelper>(".pdf");
+            container.RegisterType<IFileReaderHelper, FileReaderDocxHelper>(".docx");
         }
 
         private static void RegisterRepository(IUnityContainer container)
