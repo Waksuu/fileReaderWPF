@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -38,13 +39,14 @@ namespace fileReaderWPF
 
         #endregion Dependencies
 
+        string folderPath;
         private IEnumerable<string> filesForPath;
         private HashSet<string> extensions = new HashSet<string>();
+        private ObservableCollection<PhraseLocation> phraseLocations = new ObservableCollection<PhraseLocation>();
 
         private static object _syncLock = new object();
         private IUnityContainer container;
 
-        private ObservableCollection<PhraseLocation> phraseLocations = new ObservableCollection<PhraseLocation>();
 
         public MainWindow()
         {
@@ -68,29 +70,34 @@ namespace fileReaderWPF
 
         private void FolderSelectBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (!extensions.Any())
-            {
-                System.Windows.MessageBox.Show(Base.Properties.Resources.CouldNotFindAnyExtensions);
-                return;
-            }
-
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.RootFolder = Environment.SpecialFolder.MyComputer;
             fbd.Description = Base.Properties.Resources.FolderBrowserDialogDescription;
 
             if (fbd.ShowDialog().ToString().Equals("OK"))
             {
-                string folderPath = fbd.SelectedPath;
-
-                ISpecification<string> extensionSpecification = SpecificationHelper.Value.SpecifyExtensions(extensions);
-                filesForPath = FolderRepository.Value.GetFilesForPath(folderPath, extensionSpecification);
-
+                folderPath = fbd.SelectedPath;
                 runSearchBtn.IsEnabled = true;
             }
         }
 
         private async void RunSeatchBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (!extensions.Any())
+            {
+                System.Windows.MessageBox.Show(Base.Properties.Resources.CouldNotFindAnyExtensions);
+                return;
+            }
+
+            if(!Directory.Exists(folderPath))
+            {
+                System.Windows.MessageBox.Show(Base.Properties.Resources.DirectoryDoesntExist);
+                return;
+            }
+
+            ISpecification<string> extensionSpecification = SpecificationHelper.Value.SpecifyExtensions(extensions);
+            filesForPath = FolderRepository.Value.GetFilesForPath(folderPath, extensionSpecification);
+
             string soughtPhrase = this.soughtPhrase.Text;
             var sentences = await SearchLogic.Value.SearchWordsAsync(filesForPath, soughtPhrase, container);
 
@@ -98,7 +105,7 @@ namespace fileReaderWPF
             sentences.ForEach(x => phraseLocations.Add(x));
         }
 
-        private void searchResultsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void SearchResultsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             //int i = 0;
             List<string> phraseIntoList = new List<string>();

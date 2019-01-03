@@ -12,6 +12,7 @@ namespace fileReaderWPF.Base.Logic
     {
         public Task<IEnumerable<PhraseLocation>> SearchWordsAsync(IEnumerable<string> filePaths, string phrase, IUnityContainer container)
         {
+
             return Task.Run(() =>
             {
                 List<PhraseLocation> results = new List<PhraseLocation>();

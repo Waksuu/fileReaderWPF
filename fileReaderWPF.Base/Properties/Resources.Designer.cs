@@ -70,6 +70,15 @@ namespace fileReaderWPF.Base.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Given directory does not exist.
+        /// </summary>
+        public static string DirectoryDoesntExist {
+            get {
+                return ResourceManager.GetString("DirectoryDoesntExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extensions cannot be empty.
         /// </summary>
         public static string EmptyExtensions {

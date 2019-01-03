@@ -120,6 +120,9 @@
   <data name="CouldNotFindAnyExtensions" xml:space="preserve">
     <value>Please select at least one extension</value>
   </data>
+  <data name="DirectoryDoesntExist" xml:space="preserve">
+    <value>Given directory does not exist</value>
+  </data>
   <data name="EmptyExtensions" xml:space="preserve">
     <value>Extensions cannot be empty</value>
   </data>
