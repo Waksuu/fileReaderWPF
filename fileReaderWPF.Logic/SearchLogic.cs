@@ -1,5 +1,7 @@
 ﻿using fileReaderWPF.Base.Helpers;
 using fileReaderWPF.Base.Model;
+using fileReaderWPF.Base.Repository;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,9 +12,20 @@ namespace fileReaderWPF.Base.Logic
 {
     public class SearchLogic : ISearchLogic
     {
+        private readonly IFolderRepository folderRepository;
+        private readonly ISpecificationHelper specificationHelper;
+
+        public SearchLogic(IFolderRepository folderRepository, ISpecificationHelper specificationHelper)
+        {
+            if (folderRepository is null || specificationHelper is null)
+                throw new ArgumentNullException();
+
+            this.folderRepository = folderRepository;
+            this.specificationHelper = specificationHelper;
+        }
+
         public Task<IEnumerable<PhraseLocation>> SearchWordsAsync(IEnumerable<string> filePaths, string phrase, IUnityContainer container)
         {
-
             return Task.Run(() =>
             {
                 List<PhraseLocation> results = new List<PhraseLocation>();

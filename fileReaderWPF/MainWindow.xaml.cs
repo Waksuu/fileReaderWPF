@@ -39,14 +39,13 @@ namespace fileReaderWPF
 
         #endregion Dependencies
 
-        string folderPath;
+        private string folderPath;
         private IEnumerable<string> filesForPath;
         private HashSet<string> extensions = new HashSet<string>();
         private ObservableCollection<PhraseLocation> phraseLocations = new ObservableCollection<PhraseLocation>();
 
         private static object _syncLock = new object();
         private IUnityContainer container;
-
 
         public MainWindow()
         {
@@ -89,7 +88,7 @@ namespace fileReaderWPF
                 return;
             }
 
-            if(!Directory.Exists(folderPath))
+            if (!Directory.Exists(folderPath))
             {
                 System.Windows.MessageBox.Show(Base.Properties.Resources.DirectoryDoesntExist);
                 return;
