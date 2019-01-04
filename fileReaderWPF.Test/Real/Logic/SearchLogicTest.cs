@@ -19,7 +19,7 @@ namespace fileReaderWPF.Test.Real.Logic
             string phrase = "is always the";
             string folderPath = @"./TestResources";
 
-            var result = SearchLogic.SearchWordsInFilesAsync(extensions, phrase, folderPath, Container).Result.ToList();
+            var result = SearchLogic.SearchWordsInFilesAsync(extensions, phrase, folderPath).Result.ToList();
 
             foreach (var item in result)
             {

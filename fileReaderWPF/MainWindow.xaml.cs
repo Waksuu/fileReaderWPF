@@ -25,12 +25,7 @@ namespace fileReaderWPF
     public partial class MainWindow : Window
     {
         #region Dependencies
-
-        private IUnityContainer _diContainer;
-
-        [Dependency]
-        public Lazy<ISearchLogicService> SearchLogicService { get; private set; }
-
+        private Lazy<ISearchLogicService> _searchLogicService;
         #endregion Dependencies
 
         private const string OK = "OK";
@@ -43,17 +38,17 @@ namespace fileReaderWPF
 
         public MainWindow()
         {
-            _diContainer = ServiceLocator.WpfContainer;
-            SearchLogicService = ResolveSearchLogicServiceDependency(_diContainer);
-
+            ResolveDependencies();
             SetUICulture(EN_US);
-
             InitializeComponent();
-
             BindPhraseLocations();
         }
 
-        private Lazy<ISearchLogicService> ResolveSearchLogicServiceDependency(IUnityContainer dependencyInjectionContainer) => dependencyInjectionContainer.Resolve<Lazy<ISearchLogicService>>();
+        private void ResolveDependencies()
+        {
+            var diContainer = ServiceLocator.WpfContainer;
+            _searchLogicService = diContainer.Resolve<Lazy<ISearchLogicService>>();
+        }
 
         private static void SetUICulture(string uiCulture) => Thread.CurrentThread.CurrentUICulture = new CultureInfo(uiCulture);
 
@@ -86,6 +81,7 @@ namespace fileReaderWPF
 
         private async void RunSearchBtn_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: UX Need to click twice on the first search?
             // TODO: UX This probably should reset paragraph, as it's content is no longer relevant
 
             if (ThereIsNoSelectedFileExtensions())
@@ -117,7 +113,7 @@ namespace fileReaderWPF
         {
             var soughtPhrase = this.soughtPhrase.Text;
 
-            return await SearchLogicService.Value.SearchWordsInFilesAsync(_selectedFileExtensions, soughtPhrase, _selectedDirectoryPathForPhraseSearch, _diContainer);
+            return await _searchLogicService.Value.SearchWordsInFilesAsync(_selectedFileExtensions, soughtPhrase, _selectedDirectoryPathForPhraseSearch);
         }
 
         private void AddAllFoundSentencesToPhraseLocations(IEnumerable<PhraseLocation> foundSentences)

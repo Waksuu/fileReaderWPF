@@ -23,7 +23,7 @@ namespace fileReaderWPF.Test.Unit.Logic
             string phrase = "doesn't matter";
             string folderPath = @"doesn't matter";
 
-            var result = SearchLogic.SearchWordsInFilesAsync(extensions, phrase, folderPath, Container).Result.ToList();
+            var result = SearchLogic.SearchWordsInFilesAsync(extensions, phrase, folderPath).Result.ToList();
 
             Assert.AreEqual(5, result.Count);
             Assert.AreEqual("Sample text", result[0].Sentence);

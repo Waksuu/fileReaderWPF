@@ -15,49 +15,83 @@ namespace fileReaderWPF.Base.Logic
 {
     public class SearchLogicService : ISearchLogicService
     {
-        [Dependency]
-        public Lazy<IFolderRepository> FolderRepository { get; set; }
+        private readonly Lazy<IFolderRepository> _folderRepository;
+        private readonly IUnityContainer _unityContainer;
 
-        public Task<IEnumerable<PhraseLocation>> SearchWordsInFilesAsync(IEnumerable<string> extensions, string phrase, string folderPath, IUnityContainer container)
+        public SearchLogicService(Lazy<IFolderRepository> folderRepository, IUnityContainer unityContainer)
         {
-            return Task.Run(() =>
+            _folderRepository = folderRepository;
+            _unityContainer = unityContainer;
+        }
+
+        public Task<IEnumerable<PhraseLocation>> SearchWordsInFilesAsync(IEnumerable<string> extensions, string phrase, string folderPath) => Task.Run(SearchWordsInFiles(extensions, phrase, folderPath));
+
+        private Func<IEnumerable<PhraseLocation>> SearchWordsInFiles(IEnumerable<string> extensions, string phrase, string folderPath) => () =>
+        {
+            ValidateExtensions(extensions);
+            ValidateSearchPhrase(phrase);
+            ValidateFolderPath(folderPath);
+
+
+            var results = new List<PhraseLocation>();
+
+            Parallel.ForEach(GetFilesForPath(extensions, folderPath), (path) =>
             {
-                ValidateInputs(extensions, phrase, folderPath, container);
+                List<PhraseLocation> phraseLocations = GetPhraseLocationsFromFile(phrase, path);
 
-
-                ISpecification<string> extensionSpecification = SpecificationHelper.SpecifyExtensions(extensions);
-                var filesForPath = FolderRepository.Value.GetFilesForPath(folderPath, extensionSpecification);
-
-                List<PhraseLocation> results = new List<PhraseLocation>();
-
-                Parallel.ForEach(filesForPath, (path) =>
+                if (phraseLocations.Any())
                 {
-                    IFileReaderHelper FileReaderHelper = container.Resolve<IFileReaderHelper>(Path.GetExtension(path));
-
-                    var phraseLocations = FileReaderHelper.GetPhraseLocationsFromFile(path, @"\b" + phrase + @"\b").ToList();
                     lock (results)
                     {
                         results.AddRange(phraseLocations);
                     }
-                });
-
-                return results.AsEnumerable();
+                }
             });
-        }
 
-        private void ValidateInputs(IEnumerable<string> extensions, string phrase, string folderPath, IUnityContainer container)
+            return results.AsEnumerable();
+        };
+
+        #region Validations
+
+        private static void ValidateExtensions(IEnumerable<string> extensions)
         {
             if (extensions is null || !extensions.Any())
+            {
                 throw new ArgumentNullException(nameof(extensions));
+            }
+        }
 
+        private static void ValidateSearchPhrase(string phrase)
+        {
             if (phrase is null)
+            {
                 throw new ArgumentNullException(nameof(phrase));
+            }
+        }
 
+        private static void ValidateFolderPath(string folderPath)
+        {
             if (string.IsNullOrWhiteSpace(folderPath))
+            {
                 throw new ArgumentNullException(nameof(folderPath));
+            }
+        }
 
-            if (container is null)
-                throw new ArgumentNullException(nameof(container));
+        #endregion Validations
+
+        private IEnumerable<string> GetFilesForPath(IEnumerable<string> extensions, string folderPath)
+        {
+            ISpecification<string> extensionSpecification = SpecificationHelper.SpecifyExtensions(extensions);
+            var filesForPath = _folderRepository.Value.GetFilesForPath(folderPath, extensionSpecification);
+            return filesForPath;
+        }
+
+        private List<PhraseLocation> GetPhraseLocationsFromFile(string phrase, string path)
+        {
+            IFileReaderHelper FileReaderHelper = _unityContainer.Resolve<IFileReaderHelper>(Path.GetExtension(path));
+
+            var phraseLocations = FileReaderHelper.GetPhraseLocationsFromFile(path, @"\b" + phrase + @"\b").ToList();
+            return phraseLocations;
         }
     }
 }
