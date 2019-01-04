@@ -13,7 +13,7 @@ using Unity.Attributes;
 
 namespace fileReaderWPF.Base.Logic
 {
-    public class SearchLogic : ISearchLogic
+    public class SearchLogicService : ISearchLogicService
     {
         [Dependency]
         public Lazy<IFolderRepository> FolderRepository { get; set; }

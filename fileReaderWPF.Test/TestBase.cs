@@ -12,13 +12,13 @@ namespace fileReaderWPF.Test
         protected abstract IUnityContainer Container { get; }
 
         [Dependency]
-        private Lazy<ISearchLogic> SearchLogicLazy { get; set; }
-        public ISearchLogic SearchLogic => SearchLogicLazy.Value;
+        private Lazy<ISearchLogicService> SearchLogicLazy { get; set; }
+        public ISearchLogicService SearchLogic => SearchLogicLazy.Value;
 
         [TestInitialize]
         public virtual void BaseInit()
         {
-            SearchLogicLazy = Container.Resolve<Lazy<ISearchLogic>>();
+            SearchLogicLazy = Container.Resolve<Lazy<ISearchLogicService>>();
         }
     }
 }

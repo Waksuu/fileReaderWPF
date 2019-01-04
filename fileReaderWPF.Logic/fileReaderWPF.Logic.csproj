@@ -80,7 +80,7 @@
     <Compile Include="Helpers\FileReaderPdfHelper.cs" />
     <Compile Include="Helpers\FileReaderTxtHelper.cs" />
     <Compile Include="Helpers\SpecificationHelper.cs" />
-    <Compile Include="SearchLogic.cs" />
+    <Compile Include="SearchLogicService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

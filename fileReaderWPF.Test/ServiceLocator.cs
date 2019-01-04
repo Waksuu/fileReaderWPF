@@ -21,26 +21,16 @@ namespace fileReaderWPF.Test
         private static Lazy<IUnityContainer> _mock;
         private static Lazy<IUnityContainer> _mockReal;
 
-        public static IUnityContainer Mock
-        {
-            get
-            {
-                return _mock.Value;
-            }
-        }
+        public static IUnityContainer Mock => _mock.Value;
 
-        public static IUnityContainer MockReal
-        {
-            get
-            {
-                return _mockReal.Value;
-            }
-        }
+        public static IUnityContainer MockReal => _mockReal.Value;
 
         static ServiceLocator()
         {
             if (_initialized)
+            {
                 return;
+            }
 
             _mock = new Lazy<IUnityContainer>(() =>
             {
@@ -65,30 +55,24 @@ namespace fileReaderWPF.Test
 
         private static void RegisterLogic(IUnityContainer container)
         {
-            container.RegisterType<ISearchLogic, SearchLogic>();
+            container.RegisterType<ISearchLogicService, SearchLogicService>();
 
             container.RegisterType<IFileReaderHelper, FileReaderHelperMock>(".txt");
             container.RegisterType<IFileReaderHelper, FileReaderHelperMock>(".docx");
             container.RegisterType<IFileReaderHelper, FileReaderHelperMock>(".pdf");
         }
 
-        private static void RegisterRepository(IUnityContainer container)
-        {
-            container.RegisterType<IFolderRepository, FolderRepositoryMock>();
-        }
+        private static void RegisterRepository(IUnityContainer container) => container.RegisterType<IFolderRepository, FolderRepositoryMock>();
 
         private static void RegisterRealLogic(IUnityContainer container)
         {
-            container.RegisterType<ISearchLogic, SearchLogic>();
+            container.RegisterType<ISearchLogicService, SearchLogicService>();
 
             container.RegisterType<IFileReaderHelper, FileReaderTxtHelper>(".txt");
             container.RegisterType<IFileReaderHelper, FileReaderPdfHelper>(".pdf");
             container.RegisterType<IFileReaderHelper, FileReaderDocxHelper>(".docx");
         }
 
-        private static void RegisterRealRepository(IUnityContainer container)
-        {
-            container.RegisterType<IFolderRepository, FolderRepository>();
-        }
+        private static void RegisterRealRepository(IUnityContainer container) => container.RegisterType<IFolderRepository, FolderRepository>();
     }
 }

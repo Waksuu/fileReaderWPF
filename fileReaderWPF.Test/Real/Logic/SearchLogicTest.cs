@@ -17,7 +17,7 @@ namespace fileReaderWPF.Test.Real.Logic
                 ".docx",
             };
             string phrase = "is always the";
-            string folderPath = @"Z:\testReader";
+            string folderPath = @"./TestResources";
 
             var result = SearchLogic.SearchWordsInFilesAsync(extensions, phrase, folderPath, Container).Result.ToList();
 

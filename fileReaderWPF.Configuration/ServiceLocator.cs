@@ -40,7 +40,7 @@ namespace fileReaderWPF.Configuration
 
         private static void RegisterLogic(IUnityContainer container)
         {
-            container.RegisterType<ISearchLogic, SearchLogic>();
+            container.RegisterType<ISearchLogicService, SearchLogicService>();
 
             container.RegisterType<IFileReaderHelper, FileReaderTxtHelper>(".txt");
             container.RegisterType<IFileReaderHelper, FileReaderPdfHelper>(".pdf");

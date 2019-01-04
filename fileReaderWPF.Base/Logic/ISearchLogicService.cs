@@ -8,7 +8,7 @@ using Unity;
 
 namespace fileReaderWPF.Base.Logic
 {
-    public interface ISearchLogic
+    public interface ISearchLogicService
     {
         /// <summary>
         /// Works asynchronous and uses Parallel foreach to execute search logic on each of the files
