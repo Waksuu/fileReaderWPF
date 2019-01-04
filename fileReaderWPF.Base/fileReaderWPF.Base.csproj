@@ -70,10 +70,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\IFileReaderHelper.cs" />
-    <Compile Include="Helpers\ISpecificationHelper.cs" />
     <Compile Include="Logic\ISearchLogic.cs" />
     <Compile Include="Model\PhraseLocation.cs" />
-    <Compile Include="Patterns\Factory\Factory.cs" />
     <Compile Include="Patterns\Specification\ExpressionSpecification.cs" />
     <Compile Include="Patterns\Specification\NotSpecification.cs" />
     <Compile Include="Patterns\Specification\OrSpecification.cs" />

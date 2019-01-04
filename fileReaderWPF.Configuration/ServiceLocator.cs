@@ -33,7 +33,6 @@ namespace fileReaderWPF.Configuration
 
                 RegisterLogic(container);
                 RegisterRepository(container);
-                //RegisterPluginRepository(container);
 
                 return container;
             });
@@ -43,7 +42,6 @@ namespace fileReaderWPF.Configuration
         {
             container.RegisterType<ISearchLogic, SearchLogic>();
 
-            container.RegisterType<ISpecificationHelper, SpecificationHelper>();
             container.RegisterType<IFileReaderHelper, FileReaderTxtHelper>(".txt");
             container.RegisterType<IFileReaderHelper, FileReaderPdfHelper>(".pdf");
             container.RegisterType<IFileReaderHelper, FileReaderDocxHelper>(".docx");

@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace fileReaderWPF.Logic.Helpers
 {
-    public class SpecificationHelper : ISpecificationHelper
+    public static class SpecificationHelper
     {
-        public ISpecification<string> SpecifyExtensions(IEnumerable<string> extensions)
+        public static ISpecification<string> SpecifyExtensions(IEnumerable<string> extensions)
         {
             if (extensions is null || !extensions.Any())
                 throw new ArgumentNullException(Base.Properties.Resources.EmptyExtensions);

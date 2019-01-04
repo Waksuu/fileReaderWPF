@@ -1,8 +1,5 @@
-﻿using fileReaderWPF.Base.Helpers;
-using fileReaderWPF.Base.Logic;
+﻿using fileReaderWPF.Base.Logic;
 using fileReaderWPF.Base.Model;
-using fileReaderWPF.Base.Patterns.Specification;
-using fileReaderWPF.Base.Repository;
 using fileReaderWPF.Configuration;
 using System;
 using System.Collections.Generic;
@@ -29,18 +26,11 @@ namespace fileReaderWPF
         #region Dependencies
 
         [Dependency]
-        public Lazy<IFolderRepository> FolderRepository { get; set; }
-
-        [Dependency]
         public Lazy<ISearchLogic> SearchLogic { get; set; }
-
-        [Dependency]
-        public Lazy<ISpecificationHelper> SpecificationHelper { get; set; }
 
         #endregion Dependencies
 
         private string folderPath;
-        private IEnumerable<string> filesForPath;
         private HashSet<string> extensions = new HashSet<string>();
         private ObservableCollection<PhraseLocation> phraseLocations = new ObservableCollection<PhraseLocation>();
 
@@ -62,9 +52,7 @@ namespace fileReaderWPF
 
         private void ResolveDependencies(IUnityContainer container)
         {
-            FolderRepository = container.Resolve<Lazy<IFolderRepository>>();
             SearchLogic = container.Resolve<Lazy<ISearchLogic>>();
-            SpecificationHelper = container.Resolve<Lazy<ISpecificationHelper>>();
         }
 
         private void FolderSelectBtn_Click(object sender, RoutedEventArgs e)
@@ -94,19 +82,15 @@ namespace fileReaderWPF
                 return;
             }
 
-            ISpecification<string> extensionSpecification = SpecificationHelper.Value.SpecifyExtensions(extensions);
-            filesForPath = FolderRepository.Value.GetFilesForPath(folderPath, extensionSpecification);
-
             string soughtPhrase = this.soughtPhrase.Text;
-            var sentences = await SearchLogic.Value.SearchWordsAsync(filesForPath, soughtPhrase, container);
+            var sentences = await SearchLogic.Value.SearchWordsInFilesAsync(extensions, soughtPhrase, folderPath, container);
 
             phraseLocations.Clear();
             sentences.ForEach(x => phraseLocations.Add(x));
         }
 
-        private void SearchResultsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void DisplayParagraphFromClickedResult_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            //int i = 0;
             List<string> phraseIntoList = new List<string>();
             sentencePreview.Text = string.Empty;
             string paragraph = string.Empty;
@@ -115,24 +99,6 @@ namespace fileReaderWPF
                 paragraph = phraseLocations[searchResultsGrid.SelectedIndex].Sentence;
                 sentencePreview.Text = paragraph;
             }
-            //phraseIntoList = phraseTxt.Text.Split(' ').ToList();
-
-            //IEnumerable<TextRange> wordRanges = GetAllWordRanges(richTextBox1.Document);
-            //foreach (TextRange wordRange in wordRanges)
-            //{
-            //    if (i < phraseIntoList.Count)
-            //    {
-            //        if (wordRange.Text == phraseIntoList[i])
-            //        {
-            //            wordRange.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Red);
-            //            i++;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        i = 0;
-            //    }
-            //}
         }
 
         private void SelectOrDeselectAllExtensions_Click(object sender, RoutedEventArgs e)
@@ -182,29 +148,5 @@ namespace fileReaderWPF
                 extensions.Remove(extension);
             }
         }
-
-        //public static IEnumerable<TextRange> GetAllWordRanges(FlowDocument document)
-        //{
-        //    string pattern = @"[^\W\d](\w|[-']{1,2}(?=\w))*";
-        //    TextPointer pointer = document.ContentStart;
-        //    while (pointer != null)
-        //    {
-        //        if (pointer.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
-        //        {
-        //            string textRun = pointer.GetTextInRun(LogicalDirection.Forward);
-        //            MatchCollection matches = Regex.Matches(textRun, pattern);
-        //            foreach (Match match in matches)
-        //            {
-        //                int startIndex = match.Index;
-        //                int length = match.Length;
-        //                TextPointer start = pointer.GetPositionAtOffset(startIndex);
-        //                TextPointer end = start.GetPositionAtOffset(length);
-        //                yield return new TextRange(start, end);
-        //            }
-        //        }
-
-        //        pointer = pointer.GetNextContextPosition(LogicalDirection.Forward);
-        //    }
-        //}
     }
 }
