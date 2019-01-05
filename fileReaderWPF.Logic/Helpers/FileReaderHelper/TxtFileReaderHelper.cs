@@ -1,8 +1,6 @@
 ﻿using fileReaderWPF.Base.Helpers;
 using fileReaderWPF.Base.Model;
 using fileReaderWPF.Base.Patterns.Specification;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,25 +11,28 @@ using System.Threading.Tasks;
 
 namespace fileReaderWPF.Logic.Helpers
 {
-    public class FileReaderPdfHelper : IFileReaderHelper
+    public class TxtFileReaderHelper : IFileReaderHelper
     {
         public IEnumerable<PhraseLocation> GetPhraseLocationsFromFile(string filePath, string pattern)
         {
+            string paragraph;
             bool isMatch;
+            int paragraphCount = 0;
 
             List<PhraseLocation> results = new List<PhraseLocation>();
-            using (PdfReader pdfReader = new PdfReader(filePath))
+
+            using (StreamReader streamReader = new StreamReader(filePath))
             {
-                for (int page = 1; page <= pdfReader.NumberOfPages; page++)
+                while ((paragraph = streamReader.ReadLine()) != null)
                 {
-                    string paragraph = PdfTextExtractor.GetTextFromPage(pdfReader, page);
+                    paragraphCount++;
 
                     isMatch = Regex.IsMatch(paragraph, pattern);
                     if (isMatch)
                     {
                         lock (results)
                         {
-                            results.Add(new PhraseLocation { Paragraph = page, Path = filePath, Sentence = paragraph });
+                            results.Add(new PhraseLocation { Paragraph = paragraphCount, Path = filePath, Sentence = paragraph });
                         }
                     }
                 }

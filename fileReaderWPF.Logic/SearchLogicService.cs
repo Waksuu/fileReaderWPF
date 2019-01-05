@@ -16,12 +16,12 @@ namespace fileReaderWPF.Base.Logic
     public class SearchLogicService : ISearchLogicService
     {
         private readonly Lazy<IFolderRepository> _folderRepository;
-        private readonly IUnityContainer _unityContainer;
+        private readonly IFileReaderHelperFactory _fileReaderHelperFactory;
 
-        public SearchLogicService(Lazy<IFolderRepository> folderRepository, IUnityContainer unityContainer)
+        public SearchLogicService(Lazy<IFolderRepository> folderRepository, IFileReaderHelperFactory fileReaderHelperFactory)
         {
             _folderRepository = folderRepository;
-            _unityContainer = unityContainer;
+            _fileReaderHelperFactory = fileReaderHelperFactory;
         }
 
         public Task<IEnumerable<PhraseLocation>> SearchWordsInFilesAsync(IEnumerable<string> extensions, string phrase, string folderPath) => Task.Run(SearchWordsInFiles(extensions, phrase, folderPath));
@@ -88,7 +88,7 @@ namespace fileReaderWPF.Base.Logic
 
         private List<PhraseLocation> GetPhraseLocationsFromFile(string phrase, string path)
         {
-            IFileReaderHelper FileReaderHelper = _unityContainer.Resolve<IFileReaderHelper>(Path.GetExtension(path));
+            IFileReaderHelper FileReaderHelper = _fileReaderHelperFactory.GetFileReaderHelper(Path.GetExtension(path));
 
             var phraseLocations = FileReaderHelper.GetPhraseLocationsFromFile(path, @"\b" + phrase + @"\b").ToList();
             return phraseLocations;

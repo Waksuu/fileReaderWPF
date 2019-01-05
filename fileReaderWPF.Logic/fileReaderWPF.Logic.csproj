@@ -76,9 +76,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\FileReaderDocxHelper.cs" />
-    <Compile Include="Helpers\FileReaderPdfHelper.cs" />
-    <Compile Include="Helpers\FileReaderTxtHelper.cs" />
+    <Compile Include="Helpers\FileReaderHelper\FileReaderHelperFactory.cs" />
+    <Compile Include="Helpers\FileReaderHelper\DocxFileReaderHelper.cs" />
+    <Compile Include="Helpers\FileReaderHelper\PdfFileReaderHelper.cs" />
+    <Compile Include="Helpers\FileReaderHelper\TxtFileReaderHelper.cs" />
     <Compile Include="Helpers\SpecificationHelper.cs" />
     <Compile Include="SearchLogicService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -92,5 +93,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

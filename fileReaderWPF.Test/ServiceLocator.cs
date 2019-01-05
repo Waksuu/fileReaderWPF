@@ -60,6 +60,8 @@ namespace fileReaderWPF.Test
             container.RegisterType<IFileReaderHelper, FileReaderHelperMock>(".txt");
             container.RegisterType<IFileReaderHelper, FileReaderHelperMock>(".docx");
             container.RegisterType<IFileReaderHelper, FileReaderHelperMock>(".pdf");
+
+            container.RegisterType<IFileReaderHelperFactory, FileReaderHelperFactory>();
         }
 
         private static void RegisterRepository(IUnityContainer container) => container.RegisterType<IFolderRepository, FolderRepositoryMock>();
@@ -68,9 +70,11 @@ namespace fileReaderWPF.Test
         {
             container.RegisterType<ISearchLogicService, SearchLogicService>();
 
-            container.RegisterType<IFileReaderHelper, FileReaderTxtHelper>(".txt");
-            container.RegisterType<IFileReaderHelper, FileReaderPdfHelper>(".pdf");
-            container.RegisterType<IFileReaderHelper, FileReaderDocxHelper>(".docx");
+            container.RegisterType<IFileReaderHelper, TxtFileReaderHelper>(".txt");
+            container.RegisterType<IFileReaderHelper, PdfFileReaderHelper>(".pdf");
+            container.RegisterType<IFileReaderHelper, DocxFileReaderHelper>(".docx");
+
+            container.RegisterType<IFileReaderHelperFactory, FileReaderHelperFactory>();
         }
 
         private static void RegisterRealRepository(IUnityContainer container) => container.RegisterType<IFolderRepository, FolderRepository>();

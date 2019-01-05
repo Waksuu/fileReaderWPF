@@ -15,7 +15,7 @@ namespace fileReaderWPF.Test.Unit.Logic
         [TestMethod]
         public void SearchLogicTest_SearchWordsInFilesAsync()
         {
-            List<string> extensions = new List<string>()
+            var extensions = new List<string>()
             {
                 ".txt",
                 ".docx",

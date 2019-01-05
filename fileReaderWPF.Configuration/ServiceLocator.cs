@@ -11,21 +11,16 @@ namespace fileReaderWPF.Configuration
     public static class ServiceLocator
     {
         private static bool _initialized = false;
-
         private static Lazy<IUnityContainer> _wpfContainer;
 
-        public static IUnityContainer WpfContainer
-        {
-            get
-            {
-                return _wpfContainer.Value;
-            }
-        }
+        public static IUnityContainer WpfContainer => _wpfContainer.Value;
 
         static ServiceLocator()
         {
             if (_initialized)
+            {
                 return;
+            }
 
             _wpfContainer = new Lazy<IUnityContainer>(() =>
             {
@@ -42,14 +37,13 @@ namespace fileReaderWPF.Configuration
         {
             container.RegisterType<ISearchLogicService, SearchLogicService>();
 
-            container.RegisterType<IFileReaderHelper, FileReaderTxtHelper>(".txt");
-            container.RegisterType<IFileReaderHelper, FileReaderPdfHelper>(".pdf");
-            container.RegisterType<IFileReaderHelper, FileReaderDocxHelper>(".docx");
+            container.RegisterType<IFileReaderHelper, TxtFileReaderHelper>(".txt");
+            container.RegisterType<IFileReaderHelper, PdfFileReaderHelper>(".pdf");
+            container.RegisterType<IFileReaderHelper, DocxFileReaderHelper>(".docx");
+
+            container.RegisterType<IFileReaderHelperFactory, FileReaderHelperFactory>();
         }
 
-        private static void RegisterRepository(IUnityContainer container)
-        {
-            container.RegisterType<IFolderRepository, FolderRepository>();
-        }
+        private static void RegisterRepository(IUnityContainer container) => container.RegisterType<IFolderRepository, FolderRepository>();
     }
 }
