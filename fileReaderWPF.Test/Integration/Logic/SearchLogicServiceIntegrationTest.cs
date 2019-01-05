@@ -17,7 +17,7 @@ namespace fileReaderWPF.Test.Real.Logic
         private static readonly string existingFolderPath = @"./TestResources";
 
         [TestMethod]
-        public void SearchLogicTest_SearchWordsInFilesAsync()
+        public void SearchLogicServiceTest_SearchWordsInFilesAsync()
         {
             // act
             var result = SearchLogicService.SearchWordsInFilesAsync(sampleExtensions, sampleSearchPhrase, existingFolderPath).Result.ToList();

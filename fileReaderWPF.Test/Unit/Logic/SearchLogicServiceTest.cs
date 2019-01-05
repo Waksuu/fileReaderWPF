@@ -2,6 +2,7 @@
 using fileReaderWPF.Base.Repository;
 using fileReaderWPF.Mock.Repository;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MSTestExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace fileReaderWPF.Test.Unit.Logic
         }
 
         [TestMethod]
-        public void SearchLogicTest_SearchWordsInFilesAsync()
+        public void SearchLogicServiceTest_SearchWordsInFilesAsync_ProvidesCorrectResultForCorrectData()
         {
             // act
             var result = _searchLogicService.SearchWordsInFilesAsync(sampleExtensions, samplePhrase, sampleFolderPath).Result.ToList();
@@ -44,5 +45,43 @@ namespace fileReaderWPF.Test.Unit.Logic
             Assert.AreEqual("Sample text", result[0].Sentence);
             Assert.AreEqual("Sample path", result[0].Path);
         }
+
+        [TestMethod]
+        public void SearchLogicServiceTest_SearchWordsInFilesAsync_ThrowsErrorWhenExtensionsIsNull()
+        {
+            // act & assert
+            ThrowsAsyncAssert.ThrowsAsync<ArgumentNullException>(_searchLogicService.SearchWordsInFilesAsync(null, samplePhrase, sampleFolderPath), CreateExpectedMessage("extensions"));
+        }
+
+        [TestMethod]
+        public void SearchLogicServiceTest_SearchWordsInFilesAsync_ThrowsErrorWhenExtensionsAreEmpty()
+        {
+            // act & assert
+            ThrowsAsyncAssert.ThrowsAsync<ArgumentNullException>(_searchLogicService.SearchWordsInFilesAsync(new List<string>(), samplePhrase, sampleFolderPath), CreateExpectedMessage("extensions"));
+        }
+
+        [TestMethod]
+        public void SearchLogicServiceTest_SearchWordsInFilesAsync_ThrowsErrorWhenSearchPhraseIsNull()
+        {
+            // act & assert
+            ThrowsAsyncAssert.ThrowsAsync<ArgumentNullException>(_searchLogicService.SearchWordsInFilesAsync(sampleExtensions, null, sampleFolderPath), CreateExpectedMessage("phrase"));
+        }
+
+        [TestMethod]
+        public void SearchLogicServiceTest_SearchWordsInFilesAsync_ThrowsErrorWhenPathIsNull()
+        {
+            // act & assert
+            ThrowsAsyncAssert.ThrowsAsync<ArgumentNullException>(_searchLogicService.SearchWordsInFilesAsync(sampleExtensions, samplePhrase, null), CreateExpectedMessage("folderPath"));
+        }
+
+        [TestMethod]
+        public void SearchLogicServiceTest_SearchWordsInFilesAsync_ThrowsErrorWhenPathIsWhitespaceOnly()
+        {
+            // act & assert
+            ThrowsAsyncAssert.ThrowsAsync<ArgumentNullException>(_searchLogicService.SearchWordsInFilesAsync(sampleExtensions, samplePhrase, " "), CreateExpectedMessage("folderPath"));
+        }
+
+        private string CreateExpectedMessage(string parameterName) => @"Value cannot be null.
+Parameter name: " + parameterName;
     }
 }
