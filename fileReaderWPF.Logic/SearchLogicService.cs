@@ -8,8 +8,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Unity;
-using Unity.Attributes;
 
 namespace fileReaderWPF.Base.Logic
 {

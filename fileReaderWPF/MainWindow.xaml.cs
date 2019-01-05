@@ -13,7 +13,6 @@ using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Unity;
-using Unity.Attributes;
 using Unity.Interception.Utilities;
 
 namespace fileReaderWPF

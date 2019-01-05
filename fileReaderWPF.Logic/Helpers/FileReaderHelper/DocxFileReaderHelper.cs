@@ -1,6 +1,5 @@
 ﻿using fileReaderWPF.Base.Helpers;
 using fileReaderWPF.Base.Model;
-using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Xceed.Words.NET;

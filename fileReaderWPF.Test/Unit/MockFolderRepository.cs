@@ -1,10 +1,6 @@
 ﻿using fileReaderWPF.Base.Patterns.Specification;
 using fileReaderWPF.Base.Repository;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace fileReaderWPF.Mock.Repository
 {

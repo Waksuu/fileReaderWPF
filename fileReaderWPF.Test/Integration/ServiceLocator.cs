@@ -2,14 +2,8 @@
 using fileReaderWPF.Base.Logic;
 using fileReaderWPF.Base.Repository;
 using fileReaderWPF.Logic.Helpers;
-using fileReaderWPF.Mock.Helpers;
-using fileReaderWPF.Mock.Repository;
 using fileReaderWPF.Repository;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Unity;
 
 namespace fileReaderWPF.Test
