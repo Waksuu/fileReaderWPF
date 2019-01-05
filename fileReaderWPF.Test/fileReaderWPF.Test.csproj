@@ -87,13 +87,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Real\Logic\SearchLogicTest.cs" />
-    <Compile Include="Real\RealTestBase.cs" />
-    <Compile Include="ServiceLocator.cs" />
-    <Compile Include="TestBase.cs" />
+    <Compile Include="Integration\Logic\SearchLogicServiceIntegrationTest.cs" />
+    <Compile Include="Integration\IntegrationTestBase.cs" />
+    <Compile Include="Integration\ServiceLocator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Unit\Logic\SearchLogicTest.cs" />
-    <Compile Include="Unit\UnitTestBase.cs" />
+    <Compile Include="Unit\MockFileReaderHelper.cs" />
+    <Compile Include="Unit\MockFolderRepository.cs" />
+    <Compile Include="Unit\Logic\SearchLogicServiceTest.cs" />
+    <Compile Include="Unit\MockFileReaderHelperFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -106,10 +107,6 @@
     <ProjectReference Include="..\fileReaderWPF.Logic\fileReaderWPF.Logic.csproj">
       <Project>{E7C39489-E5A3-4868-B074-7F0820F94858}</Project>
       <Name>fileReaderWPF.Logic</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\fileReaderWPF.Mock\fileReaderWPF.Mock.csproj">
-      <Project>{EB212099-57A4-46EA-ADE2-5554DC037953}</Project>
-      <Name>fileReaderWPF.Mock</Name>
     </ProjectReference>
     <ProjectReference Include="..\fileReaderWPF.Repository\fileReaderWPF.Repository.csproj">
       <Project>{5785C632-E3A2-4FA5-B0F1-AED9AA2D9CA3}</Project>

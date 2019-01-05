@@ -18,10 +18,7 @@ namespace fileReaderWPF.Test
     {
         private static bool _initialized = false;
 
-        private static Lazy<IUnityContainer> _mock;
         private static Lazy<IUnityContainer> _mockReal;
-
-        public static IUnityContainer Mock => _mock.Value;
 
         public static IUnityContainer MockReal => _mockReal.Value;
 
@@ -31,16 +28,6 @@ namespace fileReaderWPF.Test
             {
                 return;
             }
-
-            _mock = new Lazy<IUnityContainer>(() =>
-            {
-                IUnityContainer container = new UnityContainer();
-
-                RegisterLogic(container);
-                RegisterRepository(container);
-
-                return container;
-            });
 
             _mockReal = new Lazy<IUnityContainer>(() =>
             {
@@ -52,19 +39,6 @@ namespace fileReaderWPF.Test
                 return container;
             });
         }
-
-        private static void RegisterLogic(IUnityContainer container)
-        {
-            container.RegisterType<ISearchLogicService, SearchLogicService>();
-
-            container.RegisterType<IFileReaderHelper, FileReaderHelperMock>(".txt");
-            container.RegisterType<IFileReaderHelper, FileReaderHelperMock>(".docx");
-            container.RegisterType<IFileReaderHelper, FileReaderHelperMock>(".pdf");
-
-            container.RegisterType<IFileReaderHelperFactory, FileReaderHelperFactory>();
-        }
-
-        private static void RegisterRepository(IUnityContainer container) => container.RegisterType<IFolderRepository, FolderRepositoryMock>();
 
         private static void RegisterRealLogic(IUnityContainer container)
         {

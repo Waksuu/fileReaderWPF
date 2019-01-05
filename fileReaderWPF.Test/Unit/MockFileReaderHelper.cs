@@ -6,12 +6,9 @@ namespace fileReaderWPF.Mock.Helpers
 {
     public class FileReaderHelperMock : IFileReaderHelper
     {
-        public IEnumerable<PhraseLocation> GetPhraseLocationsFromFile(string filePath, string pattern)
-        {
-            return new List<PhraseLocation>()
+        public IEnumerable<PhraseLocation> GetPhraseLocationsFromFile(string filePath, string pattern) => new List<PhraseLocation>()
             {
                 new PhraseLocation() {  Paragraph = 2, Path = "Sample path", Sentence = "Sample text"},
             };
-        }
     }
 }
