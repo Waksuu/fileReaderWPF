@@ -10,7 +10,7 @@ namespace fileReaderWPF.Base.Repository
         /// </summary>
         /// <param name="folderPath">Folder where the files will be searched in</param>
         /// <param name="specification">Specification of which files will be returned</param>
-        /// <returns></returns>
+        /// <returns>Returns IEnumerable<string> or null when directory does not exist</returns>
         IEnumerable<string> GetFilesForPath(string folderPath, ISpecification<string> specification);
     }
 }

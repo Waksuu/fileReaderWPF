@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MSTestExtensions;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace fileReaderWPF.Test.Real.Logic
 {
@@ -14,7 +16,8 @@ namespace fileReaderWPF.Test.Real.Logic
                 ".docx",
             };
         private static readonly string sampleSearchPhrase = "is always the";
-        private static readonly string existingFolderPath = @"./TestResources";
+        private static readonly string existingFolderPath = @".\TestResources";
+        private static readonly string notExistingFolderPath = @".\notExistingPath";
 
         [TestMethod]
         public void SearchLogicTest_SearchWordsInFilesAsync()
@@ -27,6 +30,13 @@ namespace fileReaderWPF.Test.Real.Logic
             {
                 Assert.IsTrue(item.Sentence.Contains(sampleSearchPhrase));
             }
+        }
+
+        [TestMethod]
+        public void SearchLogicTest_SearchWordsInFilesAsync_ThrowsWhenFolderPathDoesNotExist()
+        {
+            // act & assert
+            ThrowsAsyncAssert.ThrowsAsync<InvalidOperationException>(SearchLogic.SearchWordsInFilesAsync(sampleExtensions, sampleSearchPhrase, notExistingFolderPath), Base.Properties.Resources.DirectoryDoesntExist);
         }
     }
 }

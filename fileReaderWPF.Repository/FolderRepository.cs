@@ -10,7 +10,10 @@ namespace fileReaderWPF.Repository
     {
         public IEnumerable<string> GetFilesForPath(string folderPath, ISpecification<string> specification)
         {
-            return Directory.GetFiles(@folderPath).ToList().FindAll(o => specification.IsSatisfiedBy(o));
+            if (Directory.Exists(folderPath))
+                return Directory.GetFiles(@folderPath).ToList().FindAll(o => specification.IsSatisfiedBy(o));
+            else
+                return null;
         }
     }
 }

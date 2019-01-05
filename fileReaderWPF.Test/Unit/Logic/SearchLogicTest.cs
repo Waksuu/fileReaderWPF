@@ -104,9 +104,13 @@ namespace fileReaderWPF.Test.Unit.Logic
             ThrowsAsyncAssert.ThrowsAsync<ArgumentNullException>(_searchLogic.SearchWordsInFilesAsync(sampleExtensions, samplePhrase, " "), CreateExpectedMessage("folderPath"));
         }
 
+        #region HelperMethods
+
         private string CreateExpectedMessage(string parameterName) => @"Value cannot be null.
 Parameter name: " + parameterName;
 
         private static void SetUICulture(string uiCulture) => Thread.CurrentThread.CurrentUICulture = new CultureInfo(uiCulture);
+
+        #endregion HelperMethods
     }
 }

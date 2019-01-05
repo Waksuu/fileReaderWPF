@@ -27,13 +27,8 @@ namespace fileReaderWPF.Configuration
             {
                 IUnityContainer container = new UnityContainer();
 
-                container.RegisterTypes(
-                  AllClasses.FromLoadedAssemblies(),
-                  WithMappings.FromMatchingInterface,
-                  WithName.Default);
-
-                //RegisterLogic(container);
-                //RegisterRepository(container);
+                RegisterLogic(container);
+                RegisterRepository(container);
 
                 return container;
             });

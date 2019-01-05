@@ -32,7 +32,10 @@ namespace fileReaderWPF.Base.Logic
 
             var results = new List<PhraseLocation>();
 
-            Parallel.ForEach(GetFilesForPath(extensions, folderPath), (path) =>
+            var filesForPath = GetFilesForPath(extensions, folderPath);
+            ValidateFilesForPath(filesForPath);
+
+            Parallel.ForEach(filesForPath, (path) =>
             {
                 List<PhraseLocation> phraseLocations = GetPhraseLocationsFromFile(phrase, path);
 
@@ -74,6 +77,13 @@ namespace fileReaderWPF.Base.Logic
             }
         }
 
+        private static void ValidateFilesForPath(IEnumerable<string> filesForPath)
+        {
+            if (filesForPath is null)
+            {
+                throw new InvalidOperationException(Base.Properties.Resources.DirectoryDoesntExist);
+            }
+        }
         #endregion Validations
 
         private IEnumerable<string> GetFilesForPath(IEnumerable<string> extensions, string folderPath)
