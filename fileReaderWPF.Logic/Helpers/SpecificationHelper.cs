@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace fileReaderWPF.Logic.Helpers
 {
-    public static class SpecificationHelper
+    public class SpecificationHelper
     {
         public static ISpecification<string> SpecifyExtensions(IEnumerable<string> extensions)
         {

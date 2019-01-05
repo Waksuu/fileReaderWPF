@@ -5,7 +5,7 @@ namespace fileReaderWPF.Base.Model
     /// <summary>
     /// Contains localization and text of a sentence
     /// </summary>
-    public class PhraseLocation
+    public struct PhraseLocation
     {
         /// <summary>
         /// Path of the file
@@ -21,21 +21,5 @@ namespace fileReaderWPF.Base.Model
         /// Block of text with desired sentence
         /// </summary>
         public string Sentence { get; set; }
-
-        public override bool Equals(object obj)
-        {
-            var location = obj as PhraseLocation;
-            return location != null &&
-                   Path == location.Path &&
-                   Paragraph == location.Paragraph;
-        }
-
-        public override int GetHashCode()
-        {
-            var hashCode = -1277029107;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Path);
-            hashCode = hashCode * -1521134295 + Paragraph.GetHashCode();
-            return hashCode;
-        }
     }
 }

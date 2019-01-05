@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E7C39489-E5A3-4868-B074-7F0820F94858}</ProjectGuid>
+    <ProjectGuid>{4615E753-3C6C-44B3-BD56-9FDB2A8E4EDF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>fileReaderWPF.Logic</RootNamespace>
-    <AssemblyName>fileReaderWPF.Logic</AssemblyName>
+    <RootNamespace>fileReaderWPF.Services</RootNamespace>
+    <AssemblyName>fileReaderWPF.Services</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -34,16 +34,12 @@
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.5.8.13\lib\net46\CommonServiceLocator.dll</HintPath>
     </Reference>
-    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Configuration.ConfigurationManager.4.4.1\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -71,28 +67,23 @@
     <Reference Include="Unity.ServiceLocation, Version=2.1.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.5.8.13\lib\net46\Unity.ServiceLocation.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Words.NET, Version=1.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\DocX.1.2.1\lib\Xceed.Words.NET.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\FileReaderHelper\FileReaderHelperFactory.cs" />
-    <Compile Include="Helpers\FileReaderHelper\DocxFileReaderHelper.cs" />
-    <Compile Include="Helpers\FileReaderHelper\PdfFileReaderHelper.cs" />
-    <Compile Include="Helpers\FileReaderHelper\TxtFileReaderHelper.cs" />
-    <Compile Include="Helpers\SpecificationHelper.cs" />
-    <Compile Include="SearchLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\fileReaderWPF.Base\fileReaderWPF.Base.csproj">
-      <Project>{808200e3-462d-4579-b14b-517c30790ee3}</Project>
-      <Name>fileReaderWPF.Base</Name>
-    </ProjectReference>
+    <Compile Include="SearchLogicService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\fileReaderWPF.Base\fileReaderWPF.Base.csproj">
+      <Project>{808200E3-462D-4579-B14B-517C30790EE3}</Project>
+      <Name>fileReaderWPF.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\fileReaderWPF.Configuration\fileReaderWPF.Configuration.csproj">
+      <Project>{611d7034-cf9a-4e48-b964-76c74783d127}</Project>
+      <Name>fileReaderWPF.Configuration</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

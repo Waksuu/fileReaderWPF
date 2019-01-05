@@ -36,7 +36,7 @@ namespace fileReaderWPF.Test
 
         private static void RegisterRealLogic(IUnityContainer container)
         {
-            container.RegisterType<ISearchLogicService, SearchLogicService>();
+            container.RegisterType<ISearchLogic, SearchLogic>();
 
             container.RegisterType<IFileReaderHelper, TxtFileReaderHelper>(".txt");
             container.RegisterType<IFileReaderHelper, PdfFileReaderHelper>(".pdf");

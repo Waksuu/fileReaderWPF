@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace fileReaderWPF.Base.Logic
 {
-    public class SearchLogicService : ISearchLogicService
+    public class SearchLogic : ISearchLogic
     {
         private readonly Lazy<IFolderRepository> _folderRepository;
         private readonly IFileReaderHelperFactory _fileReaderHelperFactory;
 
-        public SearchLogicService(Lazy<IFolderRepository> folderRepository, IFileReaderHelperFactory fileReaderHelperFactory)
+        public SearchLogic(Lazy<IFolderRepository> folderRepository, IFileReaderHelperFactory fileReaderHelperFactory)
         {
             _folderRepository = folderRepository;
             _fileReaderHelperFactory = fileReaderHelperFactory;

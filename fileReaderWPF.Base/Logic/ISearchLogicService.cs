@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace fileReaderWPF.Base.Logic
 {
-    public interface ISearchLogicService
+    public interface ISearchLogic
     {
         /// <summary>
         /// Works asynchronous and uses Parallel foreach to execute search logic on each of the files

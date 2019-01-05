@@ -5,6 +5,7 @@ using fileReaderWPF.Logic.Helpers;
 using fileReaderWPF.Repository;
 using System;
 using Unity;
+using Unity.RegistrationByConvention;
 
 namespace fileReaderWPF.Configuration
 {
@@ -26,8 +27,13 @@ namespace fileReaderWPF.Configuration
             {
                 IUnityContainer container = new UnityContainer();
 
-                RegisterLogic(container);
-                RegisterRepository(container);
+                container.RegisterTypes(
+                  AllClasses.FromLoadedAssemblies(),
+                  WithMappings.FromMatchingInterface,
+                  WithName.Default);
+
+                //RegisterLogic(container);
+                //RegisterRepository(container);
 
                 return container;
             });
@@ -35,7 +41,7 @@ namespace fileReaderWPF.Configuration
 
         private static void RegisterLogic(IUnityContainer container)
         {
-            container.RegisterType<ISearchLogicService, SearchLogicService>();
+            container.RegisterType<ISearchLogic, SearchLogic>();
 
             container.RegisterType<IFileReaderHelper, TxtFileReaderHelper>(".txt");
             container.RegisterType<IFileReaderHelper, PdfFileReaderHelper>(".pdf");

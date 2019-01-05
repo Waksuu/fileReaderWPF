@@ -1,6 +1,6 @@
 ﻿using fileReaderWPF.Base.Logic;
 using fileReaderWPF.Base.Model;
-using fileReaderWPF.Configuration;
+using fileReaderWPF.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,12 +8,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
-using Unity;
-using Unity.Interception.Utilities;
 
 namespace fileReaderWPF
 {
@@ -23,10 +22,6 @@ namespace fileReaderWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        #region Dependencies
-        private Lazy<ISearchLogicService> _searchLogicService;
-        #endregion Dependencies
-
         private const string OK = "OK";
         private const string EN_US = "en-us";
         private static object _synchronizationLock = new object();
@@ -37,16 +32,9 @@ namespace fileReaderWPF
 
         public MainWindow()
         {
-            ResolveDependencies();
             SetUICulture(EN_US);
             InitializeComponent();
             BindPhraseLocations();
-        }
-
-        private void ResolveDependencies()
-        {
-            var diContainer = ServiceLocator.WpfContainer;
-            _searchLogicService = diContainer.Resolve<Lazy<ISearchLogicService>>();
         }
 
         private static void SetUICulture(string uiCulture) => Thread.CurrentThread.CurrentUICulture = new CultureInfo(uiCulture);
@@ -97,7 +85,7 @@ namespace fileReaderWPF
 
             // TODO: UX there is no indication if something failed or there are no files to search from
 
-            var foundSentences = await FindSentencesInFolderPath();
+            var foundSentences = await ExecuteSearchLogicService();
 
             AddAllFoundSentencesToPhraseLocations(foundSentences);
         }
@@ -108,17 +96,18 @@ namespace fileReaderWPF
 
         private static void ShowMessageBox(string message) => System.Windows.MessageBox.Show(message);
 
-        private async System.Threading.Tasks.Task<IEnumerable<PhraseLocation>> FindSentencesInFolderPath()
+        private async Task<IEnumerable<PhraseLocation>> ExecuteSearchLogicService()
         {
             var soughtPhrase = this.soughtPhrase.Text;
+            SearchLogicService searchLogicService = new SearchLogicService();
 
-            return await _searchLogicService.Value.SearchWordsInFilesAsync(_selectedFileExtensions, soughtPhrase, _selectedDirectoryPathForPhraseSearch);
+            return await searchLogicService.FindSentencesInFolderPath(_selectedFileExtensions, soughtPhrase, _selectedDirectoryPathForPhraseSearch);
         }
 
         private void AddAllFoundSentencesToPhraseLocations(IEnumerable<PhraseLocation> foundSentences)
         {
             _phraseLocations.Clear();
-            foundSentences.ForEach(sentence => _phraseLocations.Add(sentence));
+            foundSentences.ToList().ForEach(sentence => _phraseLocations.Add(sentence));
         }
 
         private void DisplayParagraphFromClickedResult_MouseDoubleClick(object sender, MouseButtonEventArgs e)

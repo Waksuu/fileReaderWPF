@@ -9,15 +9,15 @@ namespace fileReaderWPF.Test.Real
     public class IntegrationTestBase
     {
         [Dependency]
-        private Lazy<ISearchLogicService> SearchLogicServiceLazy { get; set; }
+        private Lazy<ISearchLogic> SearchLogicLazy { get; set; }
 
         private IUnityContainer _diContainer = ServiceLocator.MockReal;
-        public ISearchLogicService SearchLogicService => SearchLogicServiceLazy.Value;
+        public ISearchLogic SearchLogic => SearchLogicLazy.Value;
 
         [TestInitialize]
         public void BaseInit()
         {
-            SearchLogicServiceLazy = _diContainer.Resolve<Lazy<ISearchLogicService>>();
+            SearchLogicLazy = _diContainer.Resolve<Lazy<ISearchLogic>>();
         }
     }
 }

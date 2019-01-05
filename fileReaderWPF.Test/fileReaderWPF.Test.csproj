@@ -90,13 +90,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Integration\Logic\SearchLogicServiceIntegrationTest.cs" />
+    <Compile Include="Integration\Logic\SearchLogicIntegrationTest.cs" />
     <Compile Include="Integration\IntegrationTestBase.cs" />
     <Compile Include="Integration\ServiceLocator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unit\MockFileReaderHelper.cs" />
     <Compile Include="Unit\MockFolderRepository.cs" />
-    <Compile Include="Unit\Logic\SearchLogicServiceTest.cs" />
+    <Compile Include="Unit\Logic\SearchLogicTest.cs" />
     <Compile Include="Unit\MockFileReaderHelperFactory.cs" />
   </ItemGroup>
   <ItemGroup>
