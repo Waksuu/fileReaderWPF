@@ -4,11 +4,14 @@ using System.Collections.Generic;
 
 namespace fileReaderWPF.Mock.Helpers
 {
-    public class FileReaderHelperMock : IFileReaderHelper
+    public class MockFileReaderHelper : IFileReaderHelper
     {
+        public const string SampleExistingPath = "Sample path";
+        public const string SampleExisitingText = "Sample text";
+
         public IEnumerable<PhraseLocation> GetPhraseLocationsFromFile(string filePath, string pattern) => new List<PhraseLocation>()
             {
-                new PhraseLocation() {  Paragraph = 2, Path = "Sample path", Sentence = "Sample text"},
+                new PhraseLocation() {  Paragraph = 2, Path = SampleExistingPath, Sentence = SampleExisitingText},
             };
     }
 }

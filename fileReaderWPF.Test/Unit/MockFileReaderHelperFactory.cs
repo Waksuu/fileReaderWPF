@@ -5,6 +5,6 @@ namespace fileReaderWPF.Test.Unit
 {
     class MockFileReaderHelperFactory : IFileReaderHelperFactory
     {
-        public IFileReaderHelper GetFileReaderHelper(string extension) => new FileReaderHelperMock();
+        public IFileReaderHelper GetFileReaderHelper(string extension) => new MockFileReaderHelper();
     }
 }

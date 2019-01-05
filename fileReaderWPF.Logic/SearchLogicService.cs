@@ -22,14 +22,13 @@ namespace fileReaderWPF.Base.Logic
             _fileReaderHelperFactory = fileReaderHelperFactory;
         }
 
-        public Task<IEnumerable<PhraseLocation>> SearchWordsInFilesAsync(IEnumerable<string> extensions, string phrase, string folderPath) => Task.Run(SearchWordsInFiles(extensions, phrase, folderPath));
+        public Task<IEnumerable<PhraseLocation>> SearchWordsInFilesAsync(IEnumerable<string> extensions, string phrase, string folderPath) => Task.Run(() => SearchWordsInFiles(extensions, phrase, folderPath));
 
-        private Func<IEnumerable<PhraseLocation>> SearchWordsInFiles(IEnumerable<string> extensions, string phrase, string folderPath) => () =>
+        private IEnumerable<PhraseLocation> SearchWordsInFiles(IEnumerable<string> extensions, string phrase, string folderPath)
         {
             ValidateExtensions(extensions);
             ValidateSearchPhrase(phrase);
             ValidateFolderPath(folderPath);
-
 
             var results = new List<PhraseLocation>();
 
@@ -47,7 +46,7 @@ namespace fileReaderWPF.Base.Logic
             });
 
             return results.AsEnumerable();
-        };
+        }
 
         #region Validations
 
@@ -80,16 +79,13 @@ namespace fileReaderWPF.Base.Logic
         private IEnumerable<string> GetFilesForPath(IEnumerable<string> extensions, string folderPath)
         {
             ISpecification<string> extensionSpecification = SpecificationHelper.SpecifyExtensions(extensions);
-            var filesForPath = _folderRepository.Value.GetFilesForPath(folderPath, extensionSpecification);
-            return filesForPath;
+            return _folderRepository.Value.GetFilesForPath(folderPath, extensionSpecification);
         }
 
         private List<PhraseLocation> GetPhraseLocationsFromFile(string phrase, string path)
         {
             IFileReaderHelper FileReaderHelper = _fileReaderHelperFactory.GetFileReaderHelper(Path.GetExtension(path));
-
-            var phraseLocations = FileReaderHelper.GetPhraseLocationsFromFile(path, @"\b" + phrase + @"\b").ToList();
-            return phraseLocations;
+            return FileReaderHelper.GetPhraseLocationsFromFile(path, @"\b" + phrase + @"\b").ToList();
         }
     }
 }

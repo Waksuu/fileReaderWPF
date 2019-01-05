@@ -1,5 +1,6 @@
 ﻿using fileReaderWPF.Base.Logic;
 using fileReaderWPF.Base.Repository;
+using fileReaderWPF.Mock.Helpers;
 using fileReaderWPF.Mock.Repository;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSTestExtensions;
@@ -17,6 +18,7 @@ namespace fileReaderWPF.Test.Unit.Logic
                 ".txt",
                 ".docx",
             };
+
         private static readonly string samplePhrase = "doesn't matter";
         private static readonly string sampleFolderPath = @"doesn't matter";
 
@@ -39,8 +41,8 @@ namespace fileReaderWPF.Test.Unit.Logic
 
             // assert
             Assert.AreEqual(5, result.Count);
-            Assert.AreEqual("Sample text", result[0].Sentence);
-            Assert.AreEqual("Sample path", result[0].Path);
+            Assert.AreEqual(MockFileReaderHelper.SampleExisitingText, result[0].Sentence);
+            Assert.AreEqual(MockFileReaderHelper.SampleExistingPath, result[0].Path);
         }
 
         [TestMethod]
