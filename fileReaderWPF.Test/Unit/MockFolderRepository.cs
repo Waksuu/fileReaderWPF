@@ -1,18 +1,12 @@
 ﻿using fileReaderWPF.Base.Patterns.Specification;
 using fileReaderWPF.Base.Repository;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace fileReaderWPF.Mock.Repository
 {
-    public class FolderRepositoryMock : IFolderRepository
+    public class MockFolderRepository : IFolderRepository
     {
-        public IEnumerable<string> GetFilesForPath(string folderPath, ISpecification<string> specification)
-        {
-            return new List<string>()
+        public IEnumerable<string> GetFilesForPath(string folderPath, ISpecification<string> specification) => new List<string>()
             {
                 "file.txt",
                 "file2.txt",
@@ -20,6 +14,5 @@ namespace fileReaderWPF.Mock.Repository
                 "document2.docx",
                 "document3.docx",
             };
-        }
     }
 }

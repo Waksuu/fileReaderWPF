@@ -22,7 +22,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="runSearchBtn" Margin="0 0 10 0" Content="Run search" Grid.Column="0" IsEnabled="False" Click="RunSeatchBtn_Click"></Button>
+                <Button x:Name="runSearchBtn" Margin="0 0 10 0" Content="Run search" Grid.Column="0" IsEnabled="False" Click="RunSearchBtn_Click"></Button>
                 <Button x:Name="folderSelectBtn"  Content="Select folder" Grid.Column="1" x:Uid="" Click="FolderSelectBtn_Click"></Button>
                 <ComboBox x:Name="extensionComboBox" Grid.Column="2" SelectionChanged="ResetComboBoxSelectedItem_SelectionChanged" Margin="10 0 0 0">
                     <CheckBox x:Name="extensionAll" Click="SelectOrDeselectAllExtensions_Click" Width="{Binding ActualWidth, ElementName=extensionComboBox}" Content="All"></CheckBox>

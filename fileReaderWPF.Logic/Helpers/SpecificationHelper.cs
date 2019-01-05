@@ -1,11 +1,8 @@
-﻿using fileReaderWPF.Base.Helpers;
-using fileReaderWPF.Base.Patterns.Specification;
+﻿using fileReaderWPF.Base.Patterns.Specification;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace fileReaderWPF.Logic.Helpers
 {

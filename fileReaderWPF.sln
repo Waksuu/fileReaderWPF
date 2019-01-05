@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28407.52
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fileReaderWPF", "fileReaderWPF\fileReaderWPF.csproj", "{8B61F9BC-BCDF-4948-B7E3-45CEA83360B1}"
 EndProject
@@ -15,7 +15,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fileReaderWPF.Repository", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fileReaderWPF.Logic", "fileReaderWPF.Logic\fileReaderWPF.Logic.csproj", "{E7C39489-E5A3-4868-B074-7F0820F94858}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fileReaderWPF.Mock", "fileReaderWPF.Mock\fileReaderWPF.Mock.csproj", "{EB212099-57A4-46EA-ADE2-5554DC037953}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{566CF48D-A3C1-402F-A0B1-0586A9339EF2}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +51,6 @@ Global
 		{E7C39489-E5A3-4868-B074-7F0820F94858}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7C39489-E5A3-4868-B074-7F0820F94858}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7C39489-E5A3-4868-B074-7F0820F94858}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EB212099-57A4-46EA-ADE2-5554DC037953}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EB212099-57A4-46EA-ADE2-5554DC037953}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EB212099-57A4-46EA-ADE2-5554DC037953}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EB212099-57A4-46EA-ADE2-5554DC037953}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

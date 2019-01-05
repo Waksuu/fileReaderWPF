@@ -1,32 +1,33 @@
 ﻿using fileReaderWPF.Base.Helpers;
 using fileReaderWPF.Base.Model;
-using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
-using Xceed.Words.NET;
 
 namespace fileReaderWPF.Logic.Helpers
 {
-    public class FileReaderDocxHelper : IFileReaderHelper
+    public class TxtFileReaderHelper : IFileReaderHelper
     {
         public IEnumerable<PhraseLocation> GetPhraseLocationsFromFile(string filePath, string pattern)
         {
+            string paragraph;
             bool isMatch;
             int paragraphCount = 0;
 
             List<PhraseLocation> results = new List<PhraseLocation>();
-            using (DocX document = DocX.Load(filePath))
+
+            using (StreamReader streamReader = new StreamReader(filePath))
             {
-                foreach (var paragraph in document.Paragraphs)
+                while ((paragraph = streamReader.ReadLine()) != null)
                 {
                     paragraphCount++;
 
-                    isMatch = Regex.IsMatch(paragraph.Text, pattern);
+                    isMatch = Regex.IsMatch(paragraph, pattern);
                     if (isMatch)
                     {
                         lock (results)
                         {
-                            results.Add(new PhraseLocation { Paragraph = paragraphCount, Path = filePath, Sentence = paragraph.Text });
+                            results.Add(new PhraseLocation { Paragraph = paragraphCount, Path = filePath, Sentence = paragraph });
                         }
                     }
                 }

@@ -1,19 +1,13 @@
 ﻿using fileReaderWPF.Base.Helpers;
 using fileReaderWPF.Base.Model;
-using fileReaderWPF.Base.Patterns.Specification;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace fileReaderWPF.Logic.Helpers
 {
-    public class FileReaderPdfHelper : IFileReaderHelper
+    public class PdfFileReaderHelper : IFileReaderHelper
     {
         public IEnumerable<PhraseLocation> GetPhraseLocationsFromFile(string filePath, string pattern)
         {

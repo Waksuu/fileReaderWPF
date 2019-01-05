@@ -6,14 +6,15 @@ using fileReaderWPF.Repository;
 using System;
 using Unity;
 
-namespace fileReaderWPF.Configuration
+namespace fileReaderWPF.Test
 {
     public static class ServiceLocator
     {
         private static bool _initialized = false;
-        private static Lazy<IUnityContainer> _wpfContainer;
 
-        public static IUnityContainer WpfContainer => _wpfContainer.Value;
+        private static Lazy<IUnityContainer> _mockReal;
+
+        public static IUnityContainer MockReal => _mockReal.Value;
 
         static ServiceLocator()
         {
@@ -22,18 +23,18 @@ namespace fileReaderWPF.Configuration
                 return;
             }
 
-            _wpfContainer = new Lazy<IUnityContainer>(() =>
+            _mockReal = new Lazy<IUnityContainer>(() =>
             {
                 IUnityContainer container = new UnityContainer();
 
-                RegisterLogic(container);
-                RegisterRepository(container);
+                RegisterRealLogic(container);
+                RegisterRealRepository(container);
 
                 return container;
             });
         }
 
-        private static void RegisterLogic(IUnityContainer container)
+        private static void RegisterRealLogic(IUnityContainer container)
         {
             container.RegisterType<ISearchLogicService, SearchLogicService>();
 
@@ -44,6 +45,6 @@ namespace fileReaderWPF.Configuration
             container.RegisterType<IFileReaderHelperFactory, FileReaderHelperFactory>();
         }
 
-        private static void RegisterRepository(IUnityContainer container) => container.RegisterType<IFolderRepository, FolderRepository>();
+        private static void RegisterRealRepository(IUnityContainer container) => container.RegisterType<IFolderRepository, FolderRepository>();
     }
 }

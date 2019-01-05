@@ -13,140 +13,171 @@ using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Unity;
-using Unity.Attributes;
 using Unity.Interception.Utilities;
 
 namespace fileReaderWPF
 {
+    // TODO: Add tests
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
         #region Dependencies
-
-        [Dependency]
-        public Lazy<ISearchLogic> SearchLogic { get; set; }
-
+        private Lazy<ISearchLogicService> _searchLogicService;
         #endregion Dependencies
 
-        private string folderPath;
-        private HashSet<string> extensions = new HashSet<string>();
-        private ObservableCollection<PhraseLocation> phraseLocations = new ObservableCollection<PhraseLocation>();
+        private const string OK = "OK";
+        private const string EN_US = "en-us";
+        private static object _synchronizationLock = new object();
 
-        private static object _syncLock = new object();
-        private IUnityContainer container;
+        private string _selectedDirectoryPathForPhraseSearch;
+        private HashSet<string> _selectedFileExtensions = new HashSet<string>();
+        private ObservableCollection<PhraseLocation> _phraseLocations = new ObservableCollection<PhraseLocation>();
 
         public MainWindow()
         {
-            container = ServiceLocator.WpfContainer;
-            ResolveDependencies(container);
-
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-us");
-
+            ResolveDependencies();
+            SetUICulture(EN_US);
             InitializeComponent();
-
-            BindingOperations.EnableCollectionSynchronization(phraseLocations, _syncLock);
-            searchResultsGrid.ItemsSource = phraseLocations;
+            BindPhraseLocations();
         }
 
-        private void ResolveDependencies(IUnityContainer container)
+        private void ResolveDependencies()
         {
-            SearchLogic = container.Resolve<Lazy<ISearchLogic>>();
+            var diContainer = ServiceLocator.WpfContainer;
+            _searchLogicService = diContainer.Resolve<Lazy<ISearchLogicService>>();
         }
+
+        private static void SetUICulture(string uiCulture) => Thread.CurrentThread.CurrentUICulture = new CultureInfo(uiCulture);
+
+        private void BindPhraseLocations()
+        {
+            BindingOperations.EnableCollectionSynchronization(_phraseLocations, _synchronizationLock);
+            searchResultsGrid.ItemsSource = _phraseLocations;
+        }
+
+        #region Actions
 
         private void FolderSelectBtn_Click(object sender, RoutedEventArgs e)
         {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.RootFolder = Environment.SpecialFolder.MyComputer;
-            fbd.Description = Base.Properties.Resources.FolderBrowserDialogDescription;
+            var folderBrowserDialog = CreateFolderBrowserDialog();
 
-            if (fbd.ShowDialog().ToString().Equals("OK"))
+            if (ClickedOKInDialog(folderBrowserDialog))
             {
-                folderPath = fbd.SelectedPath;
+                _selectedDirectoryPathForPhraseSearch = folderBrowserDialog.SelectedPath;
                 runSearchBtn.IsEnabled = true;
             }
         }
 
-        private async void RunSeatchBtn_Click(object sender, RoutedEventArgs e)
+        private static FolderBrowserDialog CreateFolderBrowserDialog() => new FolderBrowserDialog
         {
-            if (!extensions.Any())
+            RootFolder = Environment.SpecialFolder.MyComputer,
+            Description = Base.Properties.Resources.FolderBrowserDialogDescription
+        };
+
+        private static bool ClickedOKInDialog(CommonDialog dialog) => dialog.ShowDialog().ToString().Equals(OK);
+
+        private async void RunSearchBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: UX Need to click twice on the first search?
+            // TODO: UX This probably should reset paragraph, as it's content is no longer relevant
+
+            if (ThereIsNoSelectedFileExtensions())
             {
-                System.Windows.MessageBox.Show(Base.Properties.Resources.CouldNotFindAnyExtensions);
+                ShowMessageBox(Base.Properties.Resources.CouldNotFindAnyExtensions);
                 return;
             }
 
-            if (!Directory.Exists(folderPath))
+            if (SearchDirectoryDoesNotExist())
             {
-                System.Windows.MessageBox.Show(Base.Properties.Resources.DirectoryDoesntExist);
+                ShowMessageBox(Base.Properties.Resources.DirectoryDoesntExist);
                 return;
             }
 
-            string soughtPhrase = this.soughtPhrase.Text;
-            var sentences = await SearchLogic.Value.SearchWordsInFilesAsync(extensions, soughtPhrase, folderPath, container);
+            // TODO: UX there is no indication if something failed or there are no files to search from
 
-            phraseLocations.Clear();
-            sentences.ForEach(x => phraseLocations.Add(x));
+            var foundSentences = await FindSentencesInFolderPath();
+
+            AddAllFoundSentencesToPhraseLocations(foundSentences);
+        }
+
+        private bool ThereIsNoSelectedFileExtensions() => !_selectedFileExtensions.Any();
+
+        private bool SearchDirectoryDoesNotExist() => !Directory.Exists(_selectedDirectoryPathForPhraseSearch);
+
+        private static void ShowMessageBox(string message) => System.Windows.MessageBox.Show(message);
+
+        private async System.Threading.Tasks.Task<IEnumerable<PhraseLocation>> FindSentencesInFolderPath()
+        {
+            var soughtPhrase = this.soughtPhrase.Text;
+
+            return await _searchLogicService.Value.SearchWordsInFilesAsync(_selectedFileExtensions, soughtPhrase, _selectedDirectoryPathForPhraseSearch);
+        }
+
+        private void AddAllFoundSentencesToPhraseLocations(IEnumerable<PhraseLocation> foundSentences)
+        {
+            _phraseLocations.Clear();
+            foundSentences.ForEach(sentence => _phraseLocations.Add(sentence));
         }
 
         private void DisplayParagraphFromClickedResult_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            List<string> phraseIntoList = new List<string>();
-            sentencePreview.Text = string.Empty;
-            string paragraph = string.Empty;
-            if (searchResultsGrid.SelectedIndex >= 0)
+            // TODO: UX There is no indication which file is selected
+
+            ResetSentencePreview();
+
+            if (ItemOnGridIsSelected())
             {
-                paragraph = phraseLocations[searchResultsGrid.SelectedIndex].Sentence;
-                sentencePreview.Text = paragraph;
+                sentencePreview.Text = _phraseLocations[searchResultsGrid.SelectedIndex].Sentence;
             }
         }
 
-        private void SelectOrDeselectAllExtensions_Click(object sender, RoutedEventArgs e)
-        {
-            var checkBox = (System.Windows.Controls.CheckBox)sender;
+        private void ResetSentencePreview() => sentencePreview.Text = string.Empty;
 
-            if (checkBox.IsChecked.HasValue && checkBox.IsChecked.Value)
+        private bool ItemOnGridIsSelected() => searchResultsGrid.SelectedIndex >= 0;
+
+        private void SelectOrDeselectAllExtensions_Click(object checkAllCheckbox, RoutedEventArgs e) => ChangeSelectionStatusOfAllCheckboxes((System.Windows.Controls.CheckBox)checkAllCheckbox);
+
+        private void ChangeSelectionStatusOfAllCheckboxes(System.Windows.Controls.CheckBox checkBox)
+        {
+            if (!checkBox.IsChecked.HasValue)
             {
-                foreach (var item in extensionComboBox.Items)
-                {
-                    (item as System.Windows.Controls.CheckBox).IsChecked = true;
-                }
+                return;
+            }
+
+            foreach (System.Windows.Controls.CheckBox extensionCheckBox in extensionComboBox.Items)
+            {
+                extensionCheckBox.IsChecked = checkBox.IsChecked.Value;
+            }
+        }
+
+        private void ResetComboBoxSelectedItem_SelectionChanged(object comboBox, System.Windows.Controls.SelectionChangedEventArgs e) => ((System.Windows.Controls.ComboBox)comboBox).SelectedItem = null;
+
+        private void AddExtension_Checked(object extensionCheckbox, RoutedEventArgs e) => HandleExtensionsCheckboxClick((System.Windows.Controls.CheckBox)extensionCheckbox);
+
+        private void RemoveExtension_Unchecked(object extensionCheckbox, RoutedEventArgs e) => HandleExtensionsCheckboxClick((System.Windows.Controls.CheckBox)extensionCheckbox);
+
+        private void HandleExtensionsCheckboxClick(System.Windows.Controls.CheckBox checkbox)
+        {
+            string extensionFromCheckbox = GetExtensionFromCheckbox(checkbox);
+
+            UpdateSelectedExtensionList(extensionFromCheckbox);
+        }
+
+        private static string GetExtensionFromCheckbox(System.Windows.Controls.CheckBox checkbox) => checkbox.Content.ToString();
+
+        private void UpdateSelectedExtensionList(string extension)
+        {
+            if (!_selectedFileExtensions.Contains(extension))
+            {
+                _selectedFileExtensions.Add(extension);
             }
             else
             {
-                foreach (var item in extensionComboBox.Items)
-                {
-                    (item as System.Windows.Controls.CheckBox).IsChecked = false;
-                }
-            }
-        }
-
-        private void ResetComboBoxSelectedItem_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            var comboBox = (System.Windows.Controls.ComboBox)sender;
-            comboBox.SelectedItem = null;
-        }
-
-        private void AddExtension_Checked(object sender, RoutedEventArgs e)
-        {
-            var checkbox = (System.Windows.Controls.CheckBox)sender;
-            var extension = checkbox.Content.ToString();
-
-            if (!extensions.Contains(extension))
-            {
-                extensions.Add(extension);
-            }
-        }
-
-        private void RemoveExtension_Unchecked(object sender, RoutedEventArgs e)
-        {
-            var checkbox = (System.Windows.Controls.CheckBox)sender;
-            var extension = checkbox.Content.ToString();
-
-            if (extensions.Contains(extension))
-            {
-                extensions.Remove(extension);
+                _selectedFileExtensions.Remove(extension);
             }
         }
     }
+    #endregion Actions
 }
