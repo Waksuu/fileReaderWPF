@@ -1,5 +1,6 @@
 ﻿using fileReaderWPF.Base.Logic;
 using fileReaderWPF.Base.Model;
+using fileReaderWPF.Base.Service;
 using fileReaderWPF.Configuration;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using Unity;
 
 namespace fileReaderWPF.Services
 {
-    public class SearchLogicService
+    public class SearchLogicService : ISearchLogicService
     {
         private Lazy<ISearchLogic> _searchLogic;
 

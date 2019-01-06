@@ -1,5 +1,6 @@
 ﻿using fileReaderWPF.Base.Model;
-using fileReaderWPF.Services;
+using fileReaderWPF.Base.Service;
+using fileReaderWPF.Services.Factory;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -114,7 +115,7 @@ namespace fileReaderWPF
         private async Task<IEnumerable<PhraseLocation>> ExecuteSearchLogicService()
         {
             var soughtPhrase = this.soughtPhrase.Text;
-            SearchLogicService searchLogicService = new SearchLogicService();
+            ISearchLogicService searchLogicService = SearchLogicServiceFactory.Create();
 
             return await searchLogicService.FindSentencesInFolderPath(_selectedFileExtensions, soughtPhrase, _selectedDirectoryPathForPhraseSearch);
         }
