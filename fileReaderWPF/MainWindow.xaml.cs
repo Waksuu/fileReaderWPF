@@ -16,7 +16,6 @@ using System.Windows.Input;
 
 namespace fileReaderWPF
 {
-    // TODO: Add tests
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -115,7 +114,7 @@ namespace fileReaderWPF
         private async Task<IEnumerable<PhraseLocation>> ExecuteSearchLogicService()
         {
             var soughtPhrase = this.soughtPhrase.Text;
-            ISearchLogicService searchLogicService = SearchLogicServiceFactory.Create();
+            ISearchLogicService searchLogicService = SearchLogicServiceFactory.CreateSearchLogicService();
 
             return await searchLogicService.FindSentencesInFolderPath(_selectedFileExtensions, soughtPhrase, _selectedDirectoryPathForPhraseSearch);
         }

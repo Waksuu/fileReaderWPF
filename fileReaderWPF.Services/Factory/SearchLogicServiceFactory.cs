@@ -9,7 +9,7 @@ namespace fileReaderWPF.Services.Factory
 {
     public class SearchLogicServiceFactory
     {
-        public static ISearchLogicService Create()
+        public static ISearchLogicService CreateSearchLogicService()
         {
             return new SearchLogicService();
         }
