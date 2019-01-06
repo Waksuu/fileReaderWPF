@@ -1,8 +1,11 @@
-﻿using fileReaderWPF.Base.Logic;
+﻿using fileReaderWPF.Base.Helpers;
+using fileReaderWPF.Base.Logic;
+using fileReaderWPF.Base.Patterns.Specification;
 using fileReaderWPF.Base.Repository;
 using fileReaderWPF.Mock.Helpers;
 using fileReaderWPF.Mock.Repository;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using MSTestExtensions;
 using System;
 using System.Collections.Generic;
@@ -25,6 +28,7 @@ namespace fileReaderWPF.Test.Unit.Logic
 
         private static readonly string samplePhrase = "doesn't matter";
         private static readonly string sampleFolderPath = @"doesn't matter";
+        private static readonly string notExistingFolderPath = @".\notExistingPath";
 
         private ISearchLogic _searchLogic;
 
@@ -102,6 +106,23 @@ namespace fileReaderWPF.Test.Unit.Logic
         {
             // act & assert
             ThrowsAsyncAssert.ThrowsAsync<ArgumentNullException>(_searchLogic.SearchWordsInFilesAsync(sampleExtensions, samplePhrase, " "), CreateExpectedMessage("folderPath"));
+        }
+
+        [TestMethod]
+        public void SearchLogicTest_SearchWordsInFilesAsync_ThrowsErrorWhenPathDoesNotExist()
+        {
+            // arrange
+            var mockFolderRepositoryRetruningNull = new Mock<IFolderRepository>();
+            mockFolderRepositoryRetruningNull.Setup(x => x.GetFilesForPath(It.IsAny<string>(), It.IsAny<ISpecification<string>>())).Returns((IEnumerable<string>)null);
+            var lazyMockFolderRepositoryRetruningNull = new Lazy<IFolderRepository>(() => mockFolderRepositoryRetruningNull.Object);
+
+            var mockFileReaderHelperFactory = new Mock<IFileReaderHelperFactory>();
+            mockFileReaderHelperFactory.Setup(x => x.GetFileReaderHelper("")).Returns(new MockFileReaderHelper());
+
+            var searchLogic = new SearchLogic(lazyMockFolderRepositoryRetruningNull, mockFileReaderHelperFactory.Object);
+
+            // act & assert
+            ThrowsAsyncAssert.ThrowsAsync<InvalidOperationException>(searchLogic.SearchWordsInFilesAsync(sampleExtensions, samplePhrase, notExistingFolderPath), Base.Properties.Resources.DirectoryDoesntExist);
         }
 
         #region HelperMethods
