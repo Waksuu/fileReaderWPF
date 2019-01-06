@@ -13,11 +13,6 @@ namespace fileReaderWPF.Base.Patterns.Specification
                 this.expression = expression;
         }
 
-        public ExpressionSpecification()
-        {
-
-        }
-
         public override bool IsSatisfiedBy(T o)
         {
             return this.expression(o);

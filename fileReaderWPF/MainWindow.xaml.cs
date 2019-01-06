@@ -1,5 +1,4 @@
-﻿using fileReaderWPF.Base.Logic;
-using fileReaderWPF.Base.Model;
+﻿using fileReaderWPF.Base.Model;
 using fileReaderWPF.Services;
 using System;
 using System.Collections.Generic;
@@ -53,7 +52,9 @@ namespace fileReaderWPF
 
             if (ClickedOKInDialog(folderBrowserDialog))
             {
-                _selectedDirectoryPathForPhraseSearch = folderBrowserDialog.SelectedPath;
+                var selectedPath = folderBrowserDialog.SelectedPath;
+                _selectedDirectoryPathForPhraseSearch = selectedPath;
+                ShowSelectedPath(selectedPath);
                 runSearchBtn.IsEnabled = true;
             }
         }
@@ -66,10 +67,12 @@ namespace fileReaderWPF
 
         private static bool ClickedOKInDialog(CommonDialog dialog) => dialog.ShowDialog().ToString().Equals(OK);
 
+        private static void ShowSelectedPath(string selectedPath) => ShowMessageBox(string.Format(Base.Properties.Resources.ShowSelectedFolder, selectedPath));
+
         private async void RunSearchBtn_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: UX Need to click twice on the first search?
-            // TODO: UX This probably should reset paragraph, as it's content is no longer relevant
+            _phraseLocations.Clear();
+            IEnumerable<PhraseLocation> foundSentences = new List<PhraseLocation>();
 
             if (ThereIsNoSelectedFileExtensions())
             {
@@ -83,9 +86,21 @@ namespace fileReaderWPF
                 return;
             }
 
-            // TODO: UX there is no indication if something failed or there are no files to search from
+            try
+            {
+                foundSentences = await ExecuteSearchLogicService();
+            }
+            catch (Exception ex)
+            {
+                ShowMessageBox(ex.Message);
+                return;
+            }
 
-            var foundSentences = await ExecuteSearchLogicService();
+            if (CouldNotFindMatchIn(foundSentences))
+            {
+                ShowMessageBox(Base.Properties.Resources.CouldNotFindPhrase);
+                return;
+            }
 
             AddAllFoundSentencesToPhraseLocations(foundSentences);
         }
@@ -104,16 +119,12 @@ namespace fileReaderWPF
             return await searchLogicService.FindSentencesInFolderPath(_selectedFileExtensions, soughtPhrase, _selectedDirectoryPathForPhraseSearch);
         }
 
-        private void AddAllFoundSentencesToPhraseLocations(IEnumerable<PhraseLocation> foundSentences)
-        {
-            _phraseLocations.Clear();
-            foundSentences.ToList().ForEach(sentence => _phraseLocations.Add(sentence));
-        }
+        private bool CouldNotFindMatchIn(IEnumerable<PhraseLocation> foundSentences) => !foundSentences.Any();
+
+        private void AddAllFoundSentencesToPhraseLocations(IEnumerable<PhraseLocation> foundSentences) => foundSentences.ToList().ForEach(sentence => _phraseLocations.Add(sentence));
 
         private void DisplayParagraphFromClickedResult_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            // TODO: UX There is no indication which file is selected
-
             ResetSentencePreview();
 
             if (ItemOnGridIsSelected())
@@ -141,7 +152,7 @@ namespace fileReaderWPF
             }
         }
 
-        private void ResetComboBoxSelectedItem_SelectionChanged(object comboBox, System.Windows.Controls.SelectionChangedEventArgs e) => ((System.Windows.Controls.ComboBox)comboBox).SelectedItem = null;
+        private void ResetComboBoxSelectedItem_SelectionChanged(object extensionCheckbox, System.Windows.Controls.SelectionChangedEventArgs e) => ((System.Windows.Controls.ComboBox)extensionCheckbox).SelectedItem = null;
 
         private void AddExtension_Checked(object extensionCheckbox, RoutedEventArgs e) => HandleExtensionsCheckboxClick((System.Windows.Controls.CheckBox)extensionCheckbox);
 
@@ -168,5 +179,6 @@ namespace fileReaderWPF
             }
         }
     }
+
     #endregion Actions
 }

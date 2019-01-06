@@ -69,6 +69,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\EmptyFolderException.cs" />
     <Compile Include="Helpers\IFileReaderHelper.cs" />
     <Compile Include="Helpers\IFileReaderHelperFactory.cs" />
     <Compile Include="Logic\ISearchLogic.cs" />

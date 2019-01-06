@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace fileReaderWPF.Base.Properties
-{
-
-
+namespace fileReaderWPF.Base.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -70,6 +70,15 @@ namespace fileReaderWPF.Base.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not find given phrase in files in the selected folder.
+        /// </summary>
+        public static string CouldNotFindPhrase {
+            get {
+                return ResourceManager.GetString("CouldNotFindPhrase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Given directory does not exist.
         /// </summary>
         public static string DirectoryDoesntExist {
@@ -88,11 +97,29 @@ namespace fileReaderWPF.Base.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Given folder does not contain any files with given extensions.
+        /// </summary>
+        public static string EmptyFolderException {
+            get {
+                return ResourceManager.GetString("EmptyFolderException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select folder with desired files.
         /// </summary>
         public static string FolderBrowserDialogDescription {
             get {
                 return ResourceManager.GetString("FolderBrowserDialogDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have selected {0}.
+        /// </summary>
+        public static string ShowSelectedFolder {
+            get {
+                return ResourceManager.GetString("ShowSelectedFolder", resourceCulture);
             }
         }
     }

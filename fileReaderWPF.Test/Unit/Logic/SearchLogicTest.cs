@@ -1,4 +1,5 @@
-﻿using fileReaderWPF.Base.Helpers;
+﻿using fileReaderWPF.Base.Exceptions;
+using fileReaderWPF.Base.Helpers;
 using fileReaderWPF.Base.Logic;
 using fileReaderWPF.Base.Patterns.Specification;
 using fileReaderWPF.Base.Repository;
@@ -125,6 +126,22 @@ namespace fileReaderWPF.Test.Unit.Logic
             ThrowsAsyncAssert.ThrowsAsync<InvalidOperationException>(searchLogic.SearchWordsInFilesAsync(sampleExtensions, samplePhrase, notExistingFolderPath), Base.Properties.Resources.DirectoryDoesntExist);
         }
 
+        [TestMethod]
+        public void SearchLogicTest_SearchWordsInFilesAsync_ThrowsErrorWhenThereAreNoMatchingFilesInPath()
+        {
+            // arrange
+            var mockFolderRepositoryRetruningNull = new Mock<IFolderRepository>();
+            mockFolderRepositoryRetruningNull.Setup(x => x.GetFilesForPath(It.IsAny<string>(), It.IsAny<ISpecification<string>>())).Returns(new List<string>());
+            var lazyMockFolderRepositoryRetruningNull = new Lazy<IFolderRepository>(() => mockFolderRepositoryRetruningNull.Object);
+
+            var mockFileReaderHelperFactory = new Mock<IFileReaderHelperFactory>();
+            mockFileReaderHelperFactory.Setup(x => x.GetFileReaderHelper("")).Returns(new MockFileReaderHelper());
+
+            var searchLogic = new SearchLogic(lazyMockFolderRepositoryRetruningNull, mockFileReaderHelperFactory.Object);
+
+            // act & assert
+            ThrowsAsyncAssert.ThrowsAsync<EmptyFolderException>(searchLogic.SearchWordsInFilesAsync(sampleExtensions, samplePhrase, notExistingFolderPath), Base.Properties.Resources.EmptyFolderException);
+        }
         #region HelperMethods
 
         private string CreateExpectedMessage(string parameterName) => @"Value cannot be null.

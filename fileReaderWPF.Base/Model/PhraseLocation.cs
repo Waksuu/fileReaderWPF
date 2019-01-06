@@ -21,5 +21,25 @@ namespace fileReaderWPF.Base.Model
         /// Block of text with desired sentence
         /// </summary>
         public string Sentence { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is PhraseLocation))
+            {
+                return false;
+            }
+
+            var location = (PhraseLocation)obj;
+            return Path == location.Path &&
+                   Paragraph == location.Paragraph;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = 1852624543;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Path);
+            hashCode = hashCode * -1521134295 + Paragraph.GetHashCode();
+            return hashCode;
+        }
     }
 }

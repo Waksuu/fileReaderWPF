@@ -3,6 +3,7 @@ using MSTestExtensions;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using fileReaderWPF.Base.Exceptions;
 
 namespace fileReaderWPF.Test.Real.Logic
 {
@@ -17,6 +18,7 @@ namespace fileReaderWPF.Test.Real.Logic
             };
         private static readonly string sampleSearchPhrase = "is always the";
         private static readonly string existingFolderPath = @".\TestResources";
+        private static readonly string existingFolderPathWithNoMatchingExtensions = @".\TestResources\FolderWithNoMatchingExtension";
         private static readonly string notExistingFolderPath = @".\notExistingPath";
 
         [TestMethod]
@@ -37,6 +39,12 @@ namespace fileReaderWPF.Test.Real.Logic
         {
             // act & assert
             ThrowsAsyncAssert.ThrowsAsync<InvalidOperationException>(SearchLogic.SearchWordsInFilesAsync(sampleExtensions, sampleSearchPhrase, notExistingFolderPath), Base.Properties.Resources.DirectoryDoesntExist);
+        }
+
+        [TestMethod]
+        public void SearchLogicTest_SearchWordsInFilesAsync_ThrowsErrorWhenThereAreNoMatchingFilesInPath()
+        {
+            ThrowsAsyncAssert.ThrowsAsync<EmptyFolderException>(SearchLogic.SearchWordsInFilesAsync(sampleExtensions, sampleSearchPhrase, existingFolderPathWithNoMatchingExtensions), Base.Properties.Resources.EmptyFolderException);
         }
     }
 }

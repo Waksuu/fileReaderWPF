@@ -120,13 +120,22 @@
   <data name="CouldNotFindAnyExtensions" xml:space="preserve">
     <value>Please select at least one extension</value>
   </data>
+  <data name="CouldNotFindPhrase" xml:space="preserve">
+    <value>Could not find given phrase in files in the selected folder</value>
+  </data>
   <data name="DirectoryDoesntExist" xml:space="preserve">
     <value>Given directory does not exist</value>
   </data>
   <data name="EmptyExtensions" xml:space="preserve">
     <value>Extensions cannot be empty</value>
   </data>
+  <data name="EmptyFolderException" xml:space="preserve">
+    <value>Given folder does not contain any files with given extensions</value>
+  </data>
   <data name="FolderBrowserDialogDescription" xml:space="preserve">
     <value>Please select folder with desired files</value>
+  </data>
+  <data name="ShowSelectedFolder" xml:space="preserve">
+    <value>You have selected {0}</value>
   </data>
 </root>

@@ -1,4 +1,5 @@
-﻿using fileReaderWPF.Base.Helpers;
+﻿using fileReaderWPF.Base.Exceptions;
+using fileReaderWPF.Base.Helpers;
 using fileReaderWPF.Base.Model;
 using fileReaderWPF.Base.Patterns.Specification;
 using fileReaderWPF.Base.Repository;
@@ -83,7 +84,13 @@ namespace fileReaderWPF.Base.Logic
             {
                 throw new InvalidOperationException(Base.Properties.Resources.DirectoryDoesntExist);
             }
+
+            if(!filesForPath.Any())
+            {
+                throw new EmptyFolderException(Base.Properties.Resources.EmptyFolderException);
+            }
         }
+
         #endregion Validations
 
         private IEnumerable<string> GetFilesForPath(IEnumerable<string> extensions, string folderPath)
